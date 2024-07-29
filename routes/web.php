@@ -6,6 +6,8 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [App\Http\Controllers\PageController::class, 'index'])->name('index');
 Route::get('/empresa', [App\Http\Controllers\PageController::class, 'empresa'])->name('empresa');
 Route::get('/contacto', [App\Http\Controllers\PageController::class, 'contacto'])->name('contacto');
+Route::get('/categorias', [App\Http\Controllers\PageController::class, 'categorias'])->name('categorias');
+Route::get('/productos', [App\Http\Controllers\PageController::class, 'filtroProducto'])->name('filtroproducto');
 Route::get('/presupuesto', [App\Http\Controllers\PageController::class, 'presupuesto'])->name('presupuesto');
 Route::post('/contacto/send', [App\Http\Controllers\PageController::class, 'sendContactoMail'])->name('contacto.send');
 Route::post('/presupuesto/send', [App\Http\Controllers\PageController::class, 'sendPresupuestoMail'])->name('presupuesto.send');

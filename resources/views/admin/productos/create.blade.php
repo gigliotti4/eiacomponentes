@@ -14,8 +14,18 @@
             <input type="text" class="form-control" id="nombre" name="nombre">
         </div>
         <div class="form-group col-md-4">
+            <label for="codigo">Codigo</label>
+            <input type="text" class="form-control" id="codigo" name="codigo">
+        </div>
+    </div>
+    <div class="row">
+        <div class="form-group col-md-6">
             <label for="precio">Precio</label>
             <input type="text" class="form-control" id="precio" name="precio">
+        </div>
+        <div class="form-group col-md-6">
+            <label for="descuento">Descuento</label>
+            <input type="text" class="form-control" id="descuento" name="descuento">
         </div>
     </div>
 
@@ -36,21 +46,23 @@
                 @endforeach
             </select>
         </div>
+            <div class="form-group col-md-6 my-4">
+                <label for="colores">Colores</label>
+                <select class="form-control" id="colores" name="colores[]" multiple="multiple">
+                    @foreach($colores as $color)
+                        <option value="{{ $color->id }}">{{ $color->nombre }}</option>
+                    @endforeach
+                </select>
+            </div>
+       
 
-        <div class="form-group col-md-6 my-4">
-            <label for="imagen">Imagen 900x675px</label> <br>
-            <input type="file" class="form-control-file" required id="imagen" name="imagen">
-        </div>
+       
     </div>
 
     <div class="row">
-        <div class="form-group col-md-12 my-4">
-            <label for="colores">Colores</label>
-            <select class="form-control" id="colores" name="colores[]" multiple="multiple">
-                @foreach($colores as $color)
-                    <option value="{{ $color->id }}">{{ $color->nombre }}</option>
-                @endforeach
-            </select>
+        <div class="form-group col-md-6 my-4">
+            <label for="imagen">Imagen 900x675px</label> <br>
+            <input type="file" class="form-control-file" required id="imagen" name="imagen">
         </div>
     </div>
 

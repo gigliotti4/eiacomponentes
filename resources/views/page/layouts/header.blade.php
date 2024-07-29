@@ -23,6 +23,9 @@
                     @endauth
                 <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
                     <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs('index') ? 'nav__menu__inicio' : 'nav__menu' }} {{ request()->routeIs('categorias') ? 'active__header' : '' }}" href="{{ route('categorias') }}">Productos</a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link {{ request()->routeIs('index') ? 'nav__menu__inicio' : 'nav__menu' }} {{ request()->routeIs('empresa') ? 'active__header' : '' }}" href="{{ route('empresa') }}">Nosotrosss</a>
                     </li>
                     <li class="nav-item">

@@ -7,6 +7,9 @@ use App\Models\Contacto;
 use App\Models\Logo;
 use App\Models\Rede;
 use App\Models\Slider;
+use App\Models\Categoria;
+use App\Models\Producto;
+use App\Models\Color;
 
 use Illuminate\Support\Facades\Mail;
 use App\Mail\ContactoMail;
@@ -46,6 +49,60 @@ class PageController extends Controller
     
     }
 
+    
+    public function categorias(){
+        // Obtener los datos de los modelos
+        $logo = Logo::first();
+        $empresa = Empresa::first();
+        $redes = Rede::first();
+        $contacto = Contacto::first(); // Si sólo hay un contacto, puedes usar first()
+        $categorias = Categoria::orderBy('orden', 'asc')->get();
+        $productos = Producto::orderBy('orden', 'asc')->get();
+        $colores = Color::orderBy('orden', 'asc')->get();
+       // $sliders = Slider::where('seccion', 'inicio')->get();
+        // Pasar los datos a la vista
+        return view('page.categorias', compact('empresa', 'redes', 'contacto', 'logo', 'categorias', 'productos', 'colores'));
+        
+        }
+
+
+        public function filtroProducto(Request $request)
+        {
+              // Obtener los datos de los modelos
+        $logo = Logo::first();
+        $empresa = Empresa::first();
+        $redes = Rede::first();
+        $contacto = Contacto::first(); // Si sólo hay un contacto, puedes usar first()
+            // Obtiene todas las categorías de la base de datos
+            $categorias = Categoria::all();
+
+            // Obtiene todos los colores de la base de datos
+            $colores = Color::all();
+
+            // Crea una consulta base para el modelo Producto
+            $query = Producto::query();
+
+            // Verifica si el parámetro 'categoria_id' está presente en la solicitud
+            if ($request->filled('categoria_id')) {
+                // Si 'categoria_id' está presente, filtra los productos por esta categoría
+                $query->where('categoria_id', $request->categoria_id);
+            }
+
+            // Verifica si el parámetro 'color_id' está presente en la solicitud
+            if ($request->filled('color_id')) {
+                // Si 'color_id' está presente, filtra los productos que tienen el color especificado
+                $query->whereHas('colores', function ($q) use ($request) {
+                    // Añade una condición para que el ID del color coincida con 'color_id'
+                    $q->where('color_id', $request->color_id);
+                });
+            }
+
+            // Ejecuta la consulta y obtiene todos los productos que cumplen con los filtros aplicados
+            $productos = $query->get();
+
+            // Devuelve la vista 'productos.index' con las categorías, colores y productos obtenidos
+            return view('page.categorias', compact('categorias', 'colores', 'productos', 'redes', 'contacto', 'logo'));
+        }
    
 
     public function contacto(){
@@ -62,9 +119,9 @@ class PageController extends Controller
         $logo = Logo::first();
         $redes = Rede::first();
         $contacto = Contacto::first(); // Si sólo hay un contacto, puedes usar first()
-        $sectores = Sectore::orderBy('orden', 'asc')->get();
+    
         // Pasar los datos a la vista
-        return view('page.presupuesto', compact('redes', 'contacto', 'logo', 'sectores'));
+        return view('page.presupuesto', compact('redes', 'contacto', 'logo'));
     }
 
     public function newsletter(Request $request)
