@@ -1,0 +1,170 @@
+body{
+    font-family: "Barlow";
+}
+a{
+    transition: 0.5s;
+    text-decoration: none;
+}
+.bg-transparent {
+    background-color: transparent !important;
+    font-size: 13px;
+    padding-top: 10px;
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    z-index: 1000;
+  }
+  .nav__menu__inicio{
+    color: white !important;
+    font-family: 'Barlow';
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 150%; 
+  }
+  .nav__menu__inicio:hover{
+    color: #FE2324 !important;
+    font-family: 'Barlow';
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 150%; 
+  }
+.nav__menu{
+    color: var(--Negro, #000) !important;
+    font-family: 'Barlow';
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 150%; 
+}
+
+.nav__menu:hover{
+    color: #FE2324 !important;
+    font-family: 'Barlow';
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 150%; 
+}
+
+.active__header{
+    color: #FE2324 !important;
+    font-family: 'Barlow';
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 150%; 
+}
+
+
+
+
+
+footer{
+    background-color: #1A181C;
+    padding: 50px;
+}
+.footer__secciones{
+    color: var(--Celeste, #F7F9FC);
+font-family: 'Barlow';
+font-size: 18px;
+font-style: normal;
+font-weight: 400;
+line-height: normal;
+text-transform: uppercase;
+}
+.nav__footer{
+    color: var(--Celeste, #F7F9FC);
+    font-family: 'Barlow';
+    font-size: 15px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    padding: 10px 0;
+    opacity: 0.8;
+}
+
+.nav__footer:hover{
+    color: #7CB420;
+    font-family: 'Barlow';
+    font-size: 15px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+}
+
+.input-with-arrow {
+    position: relative;
+    display: flex;
+    width: 80%;
+    max-width: 300px; /* Ajustar según sea necesario */
+    margin: auto; /* Centrar horizontalmente dentro de su contenedor */
+}
+.input-with-arrow input {
+    flex: 1;
+    padding-right: 2.5rem; /* Espacio para el botón y el icono */
+    background-color: transparent;
+    border: 1px solid #7CB420; /* Agregar borde si es necesario */
+    color: white;
+}
+.input-with-arrow button {
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    border: none;
+    background: transparent;
+    padding: 0 1rem;
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center; /* Centrar verticalmente */
+    justify-content: center; /* Centrar horizontalmente */
+}
+.input-with-arrow .fa-arrow-right {
+    color: #7CB420;
+    pointer-events: none;
+}
+
+.input-with-arrow input::placeholder {
+    color: white; /* Set placeholder color to white */
+    font-family: 'Barlow', sans-serif; /* Set the desired font family */
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+}
+
+.contact-info {
+    display: flex;
+    flex-direction: column;
+    gap: 10px; /* Adjust spacing as needed */
+}
+
+.contact-item {
+    display: flex;
+    align-items: center;
+    gap: 8px; /* Space between icon and text */
+}
+
+.contact-item svg {
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+}
+
+.contact-item a {
+    color: var(--Celeste, #F7F9FC);
+    font-family: 'Barlow';
+    font-size: 15px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    text-decoration: none;
+}
+
+.contact-item a:hover {
+    color: #7CB420;
+}
