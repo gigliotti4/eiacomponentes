@@ -10,6 +10,7 @@ use App\Models\Slider;
 use App\Models\Categoria;
 use App\Models\Producto;
 use App\Models\Color;
+use App\Models\Inyeccion;
 
 use Illuminate\Support\Facades\Mail;
 use App\Mail\ContactoMail;
@@ -43,12 +44,23 @@ class PageController extends Controller
     $empresa = Empresa::first();
     $redes = Rede::first();
     $contacto = Contacto::first(); // Si sólo hay un contacto, puedes usar first()
-   // $sliders = Slider::where('seccion', 'inicio')->get();
+   $sliders = Slider::where('seccion', 'empresa')->get();
     // Pasar los datos a la vista
-    return view('page.empresa', compact('empresa', 'redes', 'contacto', 'logo'));
+    return view('page.empresa', compact('empresa', 'redes', 'contacto', 'logo', 'sliders'));
     
     }
 
+    public function inyecciones(){
+        // Obtener los datos de los modelos
+        $logo = Logo::first();
+        $inyecciones = Inyeccion::first();
+        $redes = Rede::first();
+        $contacto = Contacto::first(); // Si sólo hay un contacto, puedes usar first()
+       $sliders = Slider::where('seccion', 'inyecciones')->get();
+        // Pasar los datos a la vista
+        return view('page.inyecciones', compact('inyecciones', 'redes', 'contacto', 'logo', 'sliders'));
+        
+        }
     
     public function categorias(){
         // Obtener los datos de los modelos
@@ -64,6 +76,21 @@ class PageController extends Controller
         return view('page.categorias', compact('empresa', 'redes', 'contacto', 'logo', 'categorias', 'productos', 'colores'));
         
         }
+
+        public function producto($id){
+            // Obtener los datos de los modelos
+            $logo = Logo::first();
+            $empresa = Empresa::first();
+            $redes = Rede::first();
+            $contacto = Contacto::first(); // Si sólo hay un contacto, puedes usar first()
+            $categorias = Categoria::orderBy('orden', 'asc')->get();
+            $producto = Producto::find($id);
+            $colores = Color::orderBy('orden', 'asc')->get();
+           // $sliders = Slider::where('seccion', 'inicio')->get();
+            // Pasar los datos a la vista
+            return view('page.producto', compact('empresa', 'redes', 'contacto', 'logo', 'categorias', 'producto', 'colores'));
+            
+            }
 
 
         public function filtroProducto(Request $request)

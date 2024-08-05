@@ -17,35 +17,42 @@ class LoginclienteController extends Controller
         return view('auth.admin-login');
     }
 
-    public function login(Request $request)
-    {
-        $this->validate($request, [
-            'username' => 'required|string',
-            'password' => 'required|string',
-        ]);
+    // public function login(Request $request)
+    // {
+    //     $this->validate($request, [
+    //         'username' => 'required|string',
+    //         'password' => 'required|string',
+    //     ]);
     
-        // Verificar el estado del usuario
-        $user = Logincliente::where('username', $request->username)->first();
-        
-        if ($user) {
-            // Verificar si el estado del usuario es 1
-            if ($user->estado == 1) {
-                return redirect()->back()->withInput($request->only('username', 'remember'))->withErrors([
-                    'username' => 'Ya puede hacer su pedido.',
-                ]);
-            }
+    //     // Verificar el estado del usuario
+    //     $user = Logincliente::where('username', $request->username)->first();
     
-            // Intentar autenticación
-            if (Auth::guard('logincliente')->attempt(['username' => $request->username, 'password' => $request->password], $request->filled('remember'))) {
-                return redirect()->intended(route('index'));
-            }
-        }
-        
-        // Si el usuario no existe o las credenciales son incorrectas
-        return redirect()->back()->withInput($request->only('username', 'remember'))->withErrors([
-            'username' => 'Estas credenciales no coinciden con nuestros registros.',
-        ]);
-    }
+    //     if ($user) {
+    //         // Verificar si el estado del usuario es 1
+    //         if ($user->estado == 1) {
+    //             // Intentar autenticación
+    //             if (Auth::guard('logincliente')->attempt([
+    //                     'username' => $request->username, 
+    //                     'password' => $request->password
+    //                 ], $request->filled('remember'))) {
+    //                     // Redireccionar a la ruta del carrito si el usuario tiene estado 1
+    //                     return route('cart.index');
+    //                 }
+    //             } else {
+    //                 return redirect()->back()->withInput($request->only('username', 'remember'))->withErrors([
+    //                     'username' => 'No está habilitado para hacer pedidos en este momento.',
+    //                 ]);
+    //             }
+    //             dd('entro');
+    //     }
+    
+    //     // Si el usuario no existe o las credenciales son incorrectas
+    //     return redirect()->back()->withInput($request->only('username', 'remember'))->withErrors([
+    //         'username' => 'Estas credenciales no coinciden con nuestros registros.',
+    //     ]);
+    // }
+    
+    
     
     
 

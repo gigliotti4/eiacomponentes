@@ -1,7 +1,7 @@
 @extends('layouts.app')
 @section('title', 'Contacto')
 @section('content')
-<div class="bg__breadcrumb">
+{{-- <div class="bg__breadcrumb">
 
     <div class="container">
         <nav aria-label="breadcrumb">
@@ -13,36 +13,36 @@
             <span class="breadcrumb-titulo">Contacto</span>
           </nav>
     </div>
-</div>
+</div> --}}
 
 
 {!!$contacto->mapa!!}
 
 <div class="container my-5">
   <div class="row">
-    <div class="col-md-6">
+    <div class="col-md-4">
       <div class="info-contact">
-        <h3 class="contenido__titulo">Contacto</h3>
-        <span>Complete el formulario para que podamos contactarnos con usted a la brevedad</span>
+        <h3 class="titulo__secciones">Contacto</h3>
+       
         <div class="item-contact mt-3">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
-                <path d="M16.6666 8.33329C16.6666 13.3333 9.99992 18.3333 9.99992 18.3333C9.99992 18.3333 3.33325 13.3333 3.33325 8.33329C3.33325 6.56518 4.03563 4.86949 5.28587 3.61925C6.53612 2.36901 8.23181 1.66663 9.99992 1.66663C11.768 1.66663 13.4637 2.36901 14.714 3.61925C15.9642 4.86949 16.6666 6.56518 16.6666 8.33329Z" stroke="#7CB420" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M10 10.8334C11.3807 10.8334 12.5 9.71409 12.5 8.33337C12.5 6.95266 11.3807 5.83337 10 5.83337C8.61929 5.83337 7.5 6.95266 7.5 8.33337C7.5 9.71409 8.61929 10.8334 10 10.8334Z" stroke="#7CB420" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
+                <path d="M16.6663 8.33332C16.6663 13.3333 9.99967 18.3333 9.99967 18.3333C9.99967 18.3333 3.33301 13.3333 3.33301 8.33332C3.33301 6.56521 4.03539 4.86952 5.28563 3.61928C6.53587 2.36904 8.23156 1.66666 9.99967 1.66666C11.7678 1.66666 13.4635 2.36904 14.7137 3.61928C15.964 4.86952 16.6663 6.56521 16.6663 8.33332Z" stroke="#FE2324" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M10 10.8333C11.3807 10.8333 12.5 9.71406 12.5 8.33334C12.5 6.95263 11.3807 5.83334 10 5.83334C8.61929 5.83334 7.5 6.95263 7.5 8.33334C7.5 9.71406 8.61929 10.8333 10 10.8333Z" stroke="#FE2324" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
             <a href="{{$contacto->enlace}}" target="_blank" class="datos__contacto">{{$contacto->direccion}}</a>
         </div>
     
         <div class="item-contact my-3">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
-                <g clip-path="url(#clip0_2421_570)">
-                    <path d="M18.3334 14.1V16.6C18.3344 16.8321 18.2868 17.0618 18.1939 17.2745C18.1009 17.4871 17.9645 17.678 17.7935 17.8349C17.6225 17.9918 17.4206 18.1113 17.2007 18.1856C16.9809 18.26 16.7479 18.2876 16.5168 18.2667C13.9525 17.9881 11.4893 17.1118 9.32511 15.7084C7.31163 14.4289 5.60455 12.7219 4.32511 10.7084C2.91676 8.53438 2.04031 6.0592 1.76677 3.48337C1.74595 3.25293 1.77334 3.02067 1.84719 2.80139C1.92105 2.58211 2.03975 2.38061 2.19575 2.20972C2.35174 2.03883 2.54161 1.9023 2.75327 1.80881C2.96492 1.71532 3.19372 1.66692 3.42511 1.66671H5.92511C6.32953 1.66273 6.7216 1.80594 7.02824 2.06965C7.33488 2.33336 7.53517 2.69958 7.59177 3.10004C7.69729 3.9001 7.89298 4.68565 8.17511 5.44171C8.28723 5.73998 8.31149 6.06414 8.24503 6.37577C8.17857 6.68741 8.02416 6.97347 7.80011 7.20004L6.74177 8.25837C7.92807 10.3447 9.65549 12.0721 11.7418 13.2584L12.8001 12.2C13.0267 11.976 13.3127 11.8216 13.6244 11.7551C13.936 11.6887 14.2602 11.7129 14.5584 11.825C15.3145 12.1072 16.1001 12.3029 16.9001 12.4084C17.3049 12.4655 17.6746 12.6694 17.9389 12.9813C18.2032 13.2932 18.3436 13.6914 18.3334 14.1Z" stroke="#7CB420" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <g clip-path="url(#clip0_1215_7450)">
+                  <path d="M18.3332 14.1V16.6C18.3341 16.8321 18.2866 17.0618 18.1936 17.2745C18.1006 17.4871 17.9643 17.678 17.7933 17.8349C17.6222 17.9918 17.4203 18.1112 17.2005 18.1856C16.9806 18.26 16.7477 18.2876 16.5165 18.2667C13.9522 17.988 11.489 17.1118 9.32486 15.7083C7.31139 14.4289 5.60431 12.7218 4.32486 10.7083C2.91651 8.53435 2.04007 6.05917 1.76653 3.48334C1.7457 3.2529 1.77309 3.02064 1.84695 2.80136C1.9208 2.58208 2.03951 2.38058 2.1955 2.20969C2.3515 2.0388 2.54137 1.90227 2.75302 1.80878C2.96468 1.71529 3.19348 1.66689 3.42486 1.66668H5.92486C6.32928 1.6627 6.72136 1.80591 7.028 2.06962C7.33464 2.33333 7.53493 2.69955 7.59153 3.10001C7.69705 3.90006 7.89274 4.68562 8.17486 5.44168C8.28698 5.73995 8.31125 6.0641 8.24478 6.37574C8.17832 6.68738 8.02392 6.97344 7.79986 7.20001L6.74153 8.25834C7.92783 10.3446 9.65524 12.072 11.7415 13.2583L12.7999 12.2C13.0264 11.976 13.3125 11.8216 13.6241 11.7551C13.9358 11.6886 14.2599 11.7129 14.5582 11.825C15.3143 12.1071 16.0998 12.3028 16.8999 12.4083C17.3047 12.4655 17.6744 12.6693 17.9386 12.9813C18.2029 13.2932 18.3433 13.6913 18.3332 14.1Z" stroke="#FE2324" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                 </g>
                 <defs>
-                    <clipPath id="clip0_2421_570">
-                        <rect width="20" height="20" fill="white"/>
-                    </clipPath>
+                  <clipPath id="clip0_1215_7450">
+                    <rect width="20" height="20" fill="white"/>
+                  </clipPath>
                 </defs>
-            </svg>
+              </svg>
             <a href="tel:{!!$contacto->telefono!!}" class="datos__contacto">{{$contacto->telefono}}</a>
         </div>
     
@@ -55,34 +55,49 @@
 
         <div class="item-contact">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
-                <path d="M16.6665 3.33325H3.33317C2.4127 3.33325 1.6665 4.07944 1.6665 4.99992V14.9999C1.6665 15.9204 2.4127 16.6666 3.33317 16.6666H16.6665C17.587 16.6666 18.3332 15.9204 18.3332 14.9999V4.99992C18.3332 4.07944 17.587 3.33325 16.6665 3.33325Z" stroke="#7CB420" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M18.3332 5.83325L10.8582 10.5833C10.6009 10.7444 10.3034 10.8299 9.99984 10.8299C9.69624 10.8299 9.39878 10.7444 9.1415 10.5833L1.6665 5.83325" stroke="#7CB420" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M16.667 3.33333H3.33366C2.41318 3.33333 1.66699 4.07952 1.66699 4.99999V15C1.66699 15.9205 2.41318 16.6667 3.33366 16.6667H16.667C17.5875 16.6667 18.3337 15.9205 18.3337 15V4.99999C18.3337 4.07952 17.5875 3.33333 16.667 3.33333Z" stroke="#FE2324" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M18.3337 5.83333L10.8587 10.5833C10.6014 10.7445 10.3039 10.83 10.0003 10.83C9.69673 10.83 9.39927 10.7445 9.14199 10.5833L1.66699 5.83333" stroke="#FE2324" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
             <a href="mailto:{{$contacto->correo}}" target="_blank" class="datos__contacto">{{$contacto->correo}}</a>
         </div>
     </div>
     </div>   
-    <div class="col-md-6">
+    <div class="col-md-8">
       <form id="contact-form" method="POST">
         @csrf
         <input type='hidden' name='g-recaptcha-response' id='g-recaptcha-response'>
-        <div class="mb-3">
-            <label for="name" class="form-label">Nombre*</label>
-            <input type="text" class="form-control" id="name" name="name" required>
+        <div class="row">
+
+            <div class="col-md-6 mb-3">
+                <label for="name" class="form-label">Nombre*</label>
+                <input type="text" class="form-control" id="name" name="name" required>
+            </div>
+            <div class="col-md-6 mb-3">
+                <label for="surname" class="form-label">Apellido*</label>
+                <input type="text" class="form-control" id="surname" name="surname" required>
+            </div>
         </div>
-        <div class="mb-3">
-            <label for="email" class="form-label">Correo Electrónico *</label>
-            <input type="email" class="form-control" id="email" name="email" required>
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label for="email" class="form-label">Correo Electrónico *</label>
+                <input type="email" class="form-control" id="email" name="email" required>
+            </div>
+            <div class="col-md-6 mb-3">
+                <label for="phone" class="form-label">Teléfono *</label>
+                <input type="text" class="form-control" id="phone" name="phone" required>
+            </div>
+
         </div>
-        <div class="mb-3">
-            <label for="phone" class="form-label">Teléfono *</label>
-            <input type="text" class="form-control" id="phone" name="phone" required>
+        <div class="row">
+
+            <div class="col-md-6 mb-3">
+                <label for="message" class="form-label">Mensaje</label>
+                <textarea class="form-control" id="message" name="message" rows="3" required></textarea>
+            </div>
+            <div class="col-md-6 ">
+                <button type="submit" class="btn btn__rojo mt-5 ms-5" >Enviar consulta</button>
+            </div>
         </div>
-        <div class="mb-3">
-            <label for="message" class="form-label">Mensaje</label>
-            <textarea class="form-control" id="message" name="message" rows="3" required></textarea>
-        </div>
-        <button type="submit" class="btn btn__azul w-100" >Enviar</button>
     </form>
     </div>
   </div>

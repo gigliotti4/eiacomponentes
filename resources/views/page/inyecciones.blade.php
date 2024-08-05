@@ -1,6 +1,7 @@
 @extends('layouts.app')
-
+@section('title', 'Inyeccion de plástico')
 @section('content')
+
 <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
     <!-- Indicadores -->
     <div class="carousel-indicators justify-content-center">
@@ -27,11 +28,11 @@
                 </div>
             @else
                 <!-- Elemento - Imagen como background -->
-                <div class="carousel-item {{ $index == 0 ? 'active' : '' }}" style="background-image: url('{{ asset(Storage::url($slider->imagen)) }}'); background-size: cover; background-position: center; height: 100vh;">
+                <div class="carousel-item {{ $index == 0 ? 'active' : '' }}" style="background-image: url('{{ asset(Storage::url($slider->imagen)) }}'); background-size: cover; background-position: center; height: 50vh;">
                     <div class="carousel-caption text-center" style="">
                         <h5 class="carousel__titulo">{{ $slider->titulo }}</h5>
                         <p class="carousel__descripcion">{!! $slider->descripcion !!}</p>
-                        <a type="button" href="{{ route('empresa') }}" class="btn btn__transparente mb-2 px-5" >MÁS INFORMACIÓN</a>
+                        {{-- <a type="button" href="{{ route('empresa') }}" class="btn btn__transparente mb-2 px-5" >MÁS INFORMACIÓN</a> --}}
                     </div>
                 </div>
             @endif
@@ -39,29 +40,31 @@
     </div>
 </div>
 
-
-
-<div class=" mt-5" style="overflow: hidden" data-aos="fade-up" data-aos-duration="1500">
+<div class="container my-5">
     <div class="row">
-        <div class="col-md-6 p-0">
-            <div style="background-image: url('{{asset(Storage::url($inicio->imagen))}}');
+        <div class="col-md-6">
+       
+            <h3 class="titulo__secciones">{{$inyecciones->titulo}}</h3>
+            <p class="contenido__descripcion my-5">{!!$inyecciones->descripcion!!}</p>
+            <a type="button" href="{{ route('contacto') }}" class="btn btn__rojo mt-5 px-5" >Consultar</a>
+     
+         </div>
+        <div class="col-md-6">
+            <div style="background-image: url('{{asset(Storage::url($inyecciones->imagen))}}');
             background-repeat:no-repeat;
             background-position:center;
             background-size:cover;
-            height:600px;
+            height:500px;
             ">
 
             </div>
         </div>
-        <div class="col-md-6 p-5" style="background: var(--Azul, #FE2324);">
-       
-                <h3 class="contenido__titulo">{{$inicio->titulo}}</h3>
-                <p class="contenido__descripcion my-5">{!!$inicio->descripcion!!}</p>
-                <a type="button" href="{{ route('empresa') }}" class="btn btn__white mb-2 px-5" >MÁS INFORMACIÓN</a>
-         
-        </div>
+      
     </div>
 </div>
+
+
+
 
 
 
@@ -71,8 +74,3 @@
 
 
 @endsection
-
-
-@push('scripts')
-  
-@endpush

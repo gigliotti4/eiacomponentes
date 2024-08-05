@@ -30,8 +30,9 @@
         </nav>
       </div>
     </li>
- <li class="sidebar-item">
-      <a href="{{ route('admin.empresa.edit', ['id' => 1]) }}" class="nav-link ">
+
+    <li class="sidebar-item">
+      <a href="" class="nav-link  collapsed" data-bs-toggle="collapse" data-bs-target="#collapsEmpresa" aria-expanded="false" aria-controls="colappsEmpresa">
         <div class="nav-link-icon">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-building" viewBox="0 0 16 16">
             <path d="M4 2.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1Zm3 0a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1Zm3.5-.5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1ZM4 5.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1ZM7.5 5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1Zm2.5.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1ZM4.5 8a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1Zm2.5.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1Zm3.5-.5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1Z"/>
@@ -39,8 +40,22 @@
           </svg>
         </div>
         <span>Empresa</span>
+        <div class="sidenav-collapse-arrow">
+          <i class="fa-solid fa-angle-down"></i>
+        </div>
       </a>
+      <div id="collapsEmpresa" class="collapse">
+        <nav class="sidenav-menu-nested nav accordion">
+          <a href="{{ route('admin.slider.index', ['seccion' => 'empresa']) }}" class="nav-link  ">Slider</a>
+        </nav>
+      </div>
+      <div id="collapsEmpresa" class="collapse">
+        <nav class="sidenav-menu-nested nav accordion">
+          <a href="{{ route('admin.empresa.edit', ['id' => 1]) }}" class="nav-link  ">Contenido</a>
+        </nav>
+      </div>
     </li>
+
     <li class="sidebar-item">
       <a href="" class="nav-link collapsed" data-bs-toggle="collapse" data-bs-target="#collapseProducto" aria-expanded="false" aria-controls="colappseProducto">
         <div class="nav-link-icon">
@@ -70,18 +85,31 @@
       </div>
    
     </li>
+
     <li class="sidebar-item">
-      <a href="" class="nav-link ">
+      <a href="" class="nav-link  collapsed" data-bs-toggle="collapse" data-bs-target="#collapseInyecciones" aria-expanded="false" aria-controls="colappseInyecciones">
         <div class="nav-link-icon">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-briefcase" viewBox="0 0 16 16">
-            <path d="M6.5 1A1.5 1.5 0 0 0 5 2.5V3H1.5A1.5 1.5 0 0 0 0 4.5v8A1.5 1.5 0 0 0 1.5 14h13a1.5 1.5 0 0 0 1.5-1.5v-8A1.5 1.5 0 0 0 14.5 3H11v-.5A1.5 1.5 0 0 0 9.5 1h-3zm0 1h3a.5.5 0 0 1 .5.5V3H6v-.5a.5.5 0 0 1 .5-.5zm1.886 6.914L15 7.151V12.5a.5.5 0 0 1-.5.5h-13a.5.5 0 0 1-.5-.5V7.15l6.614 1.764a1.5 1.5 0 0 0 .772 0zM1.5 4h13a.5.5 0 0 1 .5.5v1.616L8.129 7.948a.5.5 0 0 1-.258 0L1 6.116V4.5a.5.5 0 0 1 .5-.5z"/>
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-house-door-fill" viewBox="0 0 16 16">
+            <path d="M6.5 14.5v-3.505c0-.245.25-.495.5-.495h2c.25 0 .5.25.5.5v3.5a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.146-.354L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.354 1.146a.5.5 0 0 0-.708 0l-6 6A.5.5 0 0 0 1.5 7.5v7a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5Z"/>
           </svg>
         </div>
-        <span>Clientes</span>
-        
+        <span>Inyecciones</span>
+        <div class="sidenav-collapse-arrow">
+          <i class="fa-solid fa-angle-down"></i>
+        </div>
       </a>
-      
+      <div id="collapseInyecciones" class="collapse">
+        <nav class="sidenav-menu-nested nav accordion">
+          <a href="{{ route('admin.slider.index', ['seccion' => 'Inyecciones']) }}" class="nav-link  ">Slider</a>
+        </nav>
+      </div>
+      <div id="collapseInyecciones" class="collapse">
+        <nav class="sidenav-menu-nested nav accordion">
+          <a href="{{ route('admin.inyecciones.edit', ['id' => 1]) }}" class="nav-link  ">Contenido</a>
+        </nav>
+      </div>
     </li>
+
 
     <li class="sidebar-item">
       <a href="" class="nav-link collapsed" data-bs-toggle="collapse" data-bs-target="#collapseNovedades" aria-expanded="false" aria-controls="colappseNovedades">

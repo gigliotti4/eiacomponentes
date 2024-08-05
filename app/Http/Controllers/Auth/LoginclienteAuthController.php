@@ -25,7 +25,7 @@ class LoginclienteAuthController extends Controller
     public function store(LoginRequest $request)
     {
         $credentials = $request->only('username', 'password');
-    
+        
         if (!Auth::guard('logincliente')->attempt($credentials)) {
             return back()->withErrors(['msj' => "Las credenciales no coinciden con nuestros registros."]);
         }
@@ -38,13 +38,13 @@ class LoginclienteAuthController extends Controller
             // Cerrar sesión si el estado no es 1
             Auth::guard('logincliente')->logout();
             return redirect()->back()->withErrors(['msj' => "Tu cuenta está inactiva. Contacta al administrador."]);
-    
         }
     
         // Regenerar la sesión
-        //$request->session()->regenerate();
+        $request->session()->regenerate();
     
-        return redirect()->back()->with('success', '¡Inicio de sesión exitoso!');
+        // Redireccionar a la ruta del carrito si el estado es 1
+        return redirect()->route('cart.index')->with('success', '¡Inicio de sesión exitoso!');
     }
     
 

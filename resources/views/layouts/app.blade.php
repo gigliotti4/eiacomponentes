@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>@yield('title', 'EIA Componentes')</title>
+    <meta name="csrf-token" content="{{ csrf_token() }}"> 
     <meta name="description" content="@yield('description', 'Fabricante de Componentes eléctricos ')">
     <meta name="keywords" content="@yield('keywords', 'Fichas, Cocodrilos, Automotor, Soldadoras Eléctricas, Componentes, Medición, Exhibidores Clips Acumuladores, Productos de exportación, Cables Electronica, Cables Electricidad, Clips, Fichas Electricidad, Pincha Cable, Fichas Electronica, Ovalos')">
     <link rel="preconnect" href="https://fonts.googleapis.com">

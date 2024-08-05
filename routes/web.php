@@ -6,7 +6,9 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [App\Http\Controllers\PageController::class, 'index'])->name('index');
 Route::get('/empresa', [App\Http\Controllers\PageController::class, 'empresa'])->name('empresa');
 Route::get('/contacto', [App\Http\Controllers\PageController::class, 'contacto'])->name('contacto');
+Route::get('/inyecciones', [App\Http\Controllers\PageController::class, 'inyecciones'])->name('inyecciones');
 Route::get('/categorias', [App\Http\Controllers\PageController::class, 'categorias'])->name('categorias');
+Route::get('/producto/{id}', [App\Http\Controllers\PageController::class, 'producto'])->name('producto');
 Route::get('/productos', [App\Http\Controllers\PageController::class, 'filtroProducto'])->name('filtroproducto');
 Route::get('/presupuesto', [App\Http\Controllers\PageController::class, 'presupuesto'])->name('presupuesto');
 Route::post('/contacto/send', [App\Http\Controllers\PageController::class, 'sendContactoMail'])->name('contacto.send');
@@ -19,11 +21,21 @@ Route::post('/logincliente', [App\Http\Controllers\Auth\LoginclienteAuthControll
 Route::post('/loginclientelogout', [App\Http\Controllers\Auth\LoginclienteAuthController::class, 'logout'])->name('logincliente.logout');
 
 
-// En tus archivos de rutas
+Route::post('/add-to-cart-consumidor', [App\Http\Controllers\CartController::class, 'addconsumidor'])->name('cart.add.consumidor');
+Route::get('/cart-details-consumidor', [App\Http\Controllers\CartController::class, 'cardetailsconsumidor'])->name('cart.details.consumidor');
+Route::post('/cart-update', [App\Http\Controllers\CartController::class, 'updateconsumidor'])->name('cart.update.consumidor');
+Route::post('/cart-remove', [App\Http\Controllers\CartController::class, 'removeconsumidor'])->name('cart.remove.consumidor');
+
+
+
 Route::middleware(['logincliente'])->group(function () {
-   
-  
+    Route::get('/cart-index', [App\Http\Controllers\CartController::class, 'indexcarrito'])->name('cart.index');
+    Route::post('/add-to-cart', [App\Http\Controllers\CartController::class, 'addcomerciante'])->name('cart.add');
+    Route::get('/cart-details', [App\Http\Controllers\CartController::class, 'cardetailscomerciante'])->name('cart.details');
+    Route::post('/cart/update', [App\Http\Controllers\CartController::class, 'update'])->name('cart.update');
+    Route::post('/cart/remove', [App\Http\Controllers\CartController::class, 'remove'])->name('cart.remove');
 });
+
 
 Route::middleware(['auth', 'verified'])->group(function () {
     // Dashboard
@@ -51,6 +63,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::prefix('inicio')->name('inicio.')->group(function () {
             Route::get('/edit/{id}', [App\Http\Controllers\admin\InicioController::class, 'edit'])->name('edit');
             Route::put('/update/{id}', [App\Http\Controllers\admin\InicioController::class, 'update'])->name('update');
+        });
+
+           // Inicio routes
+           Route::prefix('inyecciones')->name('inyecciones.')->group(function () {
+            Route::get('/edit/{id}', [App\Http\Controllers\admin\InyeccionController::class, 'edit'])->name('edit');
+            Route::put('/update/{id}', [App\Http\Controllers\admin\InyeccionController::class, 'update'])->name('update');
         });
     
         // Empresa routes
