@@ -195,7 +195,7 @@ class CartController extends Controller
 
 
 
-    public function cardetailscomerciante()
+    public function cartdetailscomerciante()
     {
         $logo = Logo::first();
         $redes = Rede::first();
@@ -207,7 +207,7 @@ class CartController extends Controller
     }
 
 
-    public function cardetailsconsumidor()
+    public function cartdetailsconsumidor()
     {
         $logo = Logo::first();
         $redes = Rede::first();
@@ -218,26 +218,16 @@ class CartController extends Controller
         return view('page.cart-consumidor.carrito', compact('cartItems','redes', 'contacto', 'logo', 'cartSubotal', 'cartTotal'));
     }
 
-    // public function cartSubtotal()
-    // {
-    //     $subtotal = Cart::subtotal();
-    //     return number_format($subtotal, 2, ',', '.');
-    // }
-    
-    // public function cartTotal()
-    // {
-    //     $total = Cart::total();
-    //     return number_format($total, 2, ',', '.');
-    // }
 
-    // public function index()
-    // {
-    //     $logo = Logo::first();
-    //     $redes = Rede::first();
-    //     $contacto = Contacto::first(); // Si sólo hay un contacto, puedes usar first()
-    //     $cartItems = Cart::content();
-    //     $cartSubtotal = $this->cartSubtotal();
-    //     $cartTotal = $this->cartTotal();
-    //     return view('page.cart.index', compact('cartItems','redes', 'contacto', 'logo', 'cartSubtotal', 'cartTotal'));
-    // }
+    public function detailsconsumidor()
+    {
+        $logo = Logo::first();
+        $redes = Rede::first();
+        $contacto = Contacto::first(); // Si sólo hay un contacto, puedes usar first()
+        $cartItems = Cart::content();
+        $cartSubotal = $this->cartSubtotal();
+        $cartTotal = $this->cartTotal();
+        return view('page.cart-consumidor.details-consumidor', compact('cartItems','redes', 'contacto', 'logo', 'cartSubotal', 'cartTotal'));
+    }
+
 }

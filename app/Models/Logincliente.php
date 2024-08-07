@@ -17,17 +17,10 @@ class Logincliente extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name',
-        'username',
-        'razon_social',
-        'dni',
-        'codigopostal',
-        'telefono',
-        'email',
-        'direccion',
-        'password',
-        'estado', // Añadimos el campo estado
+        'name', 'username', 'razon_social', 'dni', 'codigopostal', 
+        'telefono', 'email', 'direccion', 'password', 'estado', 'role'
     ];
+    
 
     /**
      * The attributes that should be hidden for arrays.

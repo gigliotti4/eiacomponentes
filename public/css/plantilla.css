@@ -1,5 +1,5 @@
 body{
-    font-family: "Barlow";
+    font-family: "Work Sans", sans-serif;
 }
 a{
     transition: 0.5s;
@@ -24,7 +24,7 @@ a{
 }
   .nav__menu__inicio{
     color: white !important;
-    font-family: 'Barlow';
+    font-family: 'Work Sans';
     font-size: 16px;
     font-style: normal;
     font-weight: 400;
@@ -32,7 +32,7 @@ a{
   }
   .nav__menu__inicio:hover{
     color: #FE2324 !important;
-    font-family: 'Barlow';
+    font-family: 'Work Sans';
     font-size: 16px;
     font-style: normal;
     font-weight: 400;
@@ -40,7 +40,7 @@ a{
   }
 .nav__menu{
     color: var(--Negro, #000) !important;
-    font-family: 'Barlow';
+    font-family: 'Work Sans';
     font-size: 16px;
     font-style: normal;
     font-weight: 400;
@@ -49,7 +49,7 @@ a{
 
 .nav__menu:hover{
     color: #FE2324 !important;
-    font-family: 'Barlow';
+    font-family: 'Work Sans';
     font-size: 16px;
     font-style: normal;
     font-weight: 400;
@@ -58,7 +58,7 @@ a{
 
 .active__header{
     color: #FE2324 !important;
-    font-family: 'Barlow';
+    font-family: 'Work Sans';
     font-size: 16px;
     font-style: normal;
     font-weight: 400;
@@ -91,7 +91,7 @@ footer{
 }
 .footer__secciones{
     color: var(--Celeste, #F7F9FC);
-font-family: 'Barlow';
+font-family: 'Work Sans';
 font-size: 18px;
 font-style: normal;
 font-weight: 400;
@@ -100,7 +100,7 @@ text-transform: uppercase;
 }
 .nav__footer{
     color: var(--Celeste, #F7F9FC);
-    font-family: 'Barlow';
+    font-family: 'Work Sans';
     font-size: 15px;
     font-style: normal;
     font-weight: 400;
@@ -110,32 +110,41 @@ text-transform: uppercase;
 }
 
 .nav__footer:hover{
-    color: #7CB420;
-    font-family: 'Barlow';
+    color: #FE2324;
+    font-family: 'Work Sans';
     font-size: 15px;
     font-style: normal;
     font-weight: 400;
     line-height: normal;
 }
-
+.bg-newsletter {
+    background-color: transparent !important;
+    font-size: 14px;
+    padding-top: 10px;
+    position: absolute;
+    left: 0;
+    top: 10px;
+    right: 0;
+    z-index: 1000;
+  }
 .input-with-arrow {
     position: relative;
     display: flex;
     width: 80%;
     max-width: 300px; /* Ajustar según sea necesario */
-    margin: auto; /* Centrar horizontalmente dentro de su contenedor */
+   
 }
 .input-with-arrow input {
     flex: 1;
     padding-right: 2.5rem; /* Espacio para el botón y el icono */
     background-color: transparent;
-    border: 1px solid #7CB420; /* Agregar borde si es necesario */
+    border: 1px solid #fff; /* Agregar borde si es necesario */
     color: white;
 }
 .input-with-arrow button {
     position: absolute;
     right: 0;
-    top: 0;
+    top: 10;
     bottom: 0;
     border: none;
     background: transparent;
@@ -147,13 +156,13 @@ text-transform: uppercase;
     justify-content: center; /* Centrar horizontalmente */
 }
 .input-with-arrow .fa-arrow-right {
-    color: #7CB420;
+    color: #FE2324;
     pointer-events: none;
 }
 
 .input-with-arrow input::placeholder {
     color: white; /* Set placeholder color to white */
-    font-family: 'Barlow', sans-serif; /* Set the desired font family */
+    font-family: 'Work Sans', sans-serif; /* Set the desired font family */
     font-size: 12px;
     font-style: normal;
     font-weight: 400;
@@ -180,7 +189,7 @@ text-transform: uppercase;
 
 .contact-item a {
     color: var(--Celeste, #F7F9FC);
-    font-family: 'Barlow';
+    font-family: 'Work Sans';
     font-size: 15px;
     font-style: normal;
     font-weight: 400;
@@ -189,5 +198,5 @@ text-transform: uppercase;
 }
 
 .contact-item a:hover {
-    color: #7CB420;
+    color: #FE2324;
 }

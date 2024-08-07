@@ -24,13 +24,22 @@
                 <!-- Login button -->
                 <div class="ms-auto">
 
-                    <a href="#" class="" data-bs-toggle="modal" data-bs-target="#loginModal">
-                        @if(request()->routeIs('index') || request()->routeIs('empresa') || request()->routeIs('inyecciones'))
-                            <img src="{{ asset('img/user.svg') }}" alt="">
-                        @else 
-                            <img src="{{ asset('img/user-black.svg') }}" alt="">
-                        @endif
+                    @if(request()->routeIs('index') || request()->routeIs('empresa') || request()->routeIs('inyecciones'))
+                    <a href="#" class="btn btn__transparente" data-bs-toggle="modal" data-bs-target="#loginModal">
+                            {{-- <img src="{{ asset('img/user.svg') }}" alt=""> --}}
+                            <span>
+                                Comerciante
+                            </span>
                     </a>
+                        @else 
+                        <a href="#" class="btn btn__rojo" data-bs-toggle="modal" data-bs-target="#loginModal">
+                            {{-- <img src="{{ asset('img/user.svg') }}" alt=""> --}}
+                            {{-- <img src="{{ asset('img/user-black.svg') }}" alt=""> --}}
+                            <span class="">
+                                Comerciante
+                            </span>
+                        </a>
+                        @endif
                     <a href="{{route('cart.details.consumidor')}}" class="">
                         @if(request()->routeIs('index') || request()->routeIs('empresa') || request()->routeIs('inyecciones'))
                         <img src="{{ asset('img/shopping-cart-white.svg') }}" alt="">
@@ -61,9 +70,9 @@
                 <li class="nav-item">
                     <a class="nav-link {{ request()->routeIs('index') || request()->routeIs('empresa') || request()->routeIs('inyecciones') ? 'nav__menu__inicio' : 'nav__menu' }} {{ request()->routeIs('sectores') ? 'active__header' : '' }}" href="">Como comprar</a>
                 </li>
-                <li class="nav-item">
+                {{-- <li class="nav-item">
                     <a class="nav-link {{ request()->routeIs('index') || request()->routeIs('empresa') || request()->routeIs('inyecciones') ? 'nav__menu__inicio' : 'nav__menu' }} {{ request()->routeIs('novedades', 'novedad') ? 'active__header' : '' }}" href="">Novedades</a>
-                </li>
+                </li> --}}
                 <li class="nav-item">
                     <a class="nav-link {{ request()->routeIs('index') || request()->routeIs('empresa') || request()->routeIs('inyecciones') ? 'nav__menu__inicio' : 'nav__menu' }} {{ request()->routeIs('contacto.*') ? 'active__header' : '' }}" href="{{ route('contacto') }}">Contacto</a>
                 </li>

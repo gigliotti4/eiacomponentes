@@ -22,7 +22,8 @@ Route::post('/loginclientelogout', [App\Http\Controllers\Auth\LoginclienteAuthCo
 
 
 Route::post('/add-to-cart-consumidor', [App\Http\Controllers\CartController::class, 'addconsumidor'])->name('cart.add.consumidor');
-Route::get('/cart-details-consumidor', [App\Http\Controllers\CartController::class, 'cardetailsconsumidor'])->name('cart.details.consumidor');
+Route::get('/cart-details-consumidor', [App\Http\Controllers\CartController::class, 'cartdetailsconsumidor'])->name('cart.details.consumidor');
+Route::get('/details-consumidor', [App\Http\Controllers\CartController::class, 'detailsconsumidor'])->name('details.consumidor');
 Route::post('/cart-update', [App\Http\Controllers\CartController::class, 'updateconsumidor'])->name('cart.update.consumidor');
 Route::post('/cart-remove', [App\Http\Controllers\CartController::class, 'removeconsumidor'])->name('cart.remove.consumidor');
 
@@ -131,7 +132,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::delete('destroy/{id}', [App\Http\Controllers\admin\UserController::class, 'destroy'])->name('destroy');
         });
     
- 
+        // Users routes
+        Route::prefix('loginclientes')->name('loginclientes.')->group(function () {
+            Route::get('/', [App\Http\Controllers\LoginclienteController::class, 'index'])->name('index');
+            Route::get('/create', [App\Http\Controllers\LoginclienteController::class, 'createcliente'])->name('create');
+            Route::post('/store', [App\Http\Controllers\LoginclienteController::class, 'store'])->name('store');
+            Route::get('/edit/{id}', [App\Http\Controllers\LoginclienteController::class, 'edit'])->name('edit');
+            Route::put('/update/{id}', [App\Http\Controllers\LoginclienteController::class, 'update'])->name('update');
+            Route::delete('destroy/{id}', [App\Http\Controllers\LoginclienteController::class, 'destroy'])->name('destroy');
+        });
      
          
         Route::prefix('metadatos')->name('metadatos.')->group(function () {

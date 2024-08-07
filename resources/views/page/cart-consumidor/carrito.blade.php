@@ -3,154 +3,61 @@
 
 @section('content')
 
-<style>
-   input[type="number"] {
-        -webkit-appearance: textfield !important;
-        -moz-appearance: textfield !important;
-        appearance: textfield !important;
-    }
-    
-    input[type=number]::-webkit-inner-spin-button,
-    input[type=number]::-webkit-outer-spin-button {
-        -webkit-appearance: none;
-    }
-    .wrapper {
-        border-radius: 4px;
-        border: 1px solid var(--Gris, #D1D2D4);
-        width: 8vw;
-        padding: 3px;
-        display: flex;
-    }
-    
-    .plusminus {
-        height: 100%;
-        width: 30%;
-        background: white;
-        border: none;
-        color: #000;
-        text-align: center;
-        font-family: 'Ubuntu';
-        font-size: 21px;
-        font-style: normal;
-        font-weight: 400;
-        line-height: normal;
-    }
-    
-    .num {
-        height: 100%;
-        width: 39%;
-        border: none;
-        color: #000;
-        text-align: center;
-        font-family: 'Ubuntu';
-        font-size: 19px;
-        font-style: normal;
-        font-weight: 400;
-        line-height: normal;
-    }
-    .card__header{
-    color: #000;
-        padding: 20px;
-    /* Subtitle/S4 */
-    background-color: white;
-    font-family: "Work Sans";
-    font-size: 24px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: 120%; 
-    }
-    .card__categoria{
-        color: var(--Azul, #FE2324);
-        font-family: "Work Sans";
-        font-size: 15px;
-        font-style: normal;
-        font-weight: 700;
-        line-height: 150%; /* 18px */
-    }
-    .card__titulo{
-        color: #000;
-        /* Body/Regular/Body 20 */
-        font-family: "Work Sans";
-        font-size: 20px;
-        font-style: normal;
-        font-weight: 400;
-        line-height: 150%; /* 30px */
 
-    }
-
-    .card__precio{
-        color: #000;
-        text-align: left;
-        /* Heading/H4 */
-        font-family: "Work Sans";
-        font-size: 24px;
-        font-style: normal;
-        font-weight: 700;
-        line-height: 120%;
-    }
-
-    .cart__numero{
-        color: #000;
-        text-align: right;
-        /* Body/Bold/Body 20 */
-        font-family: "Work Sans";
-        font-size: 20px;
-        font-style: normal;
-        font-weight: 700;
-        line-height: 150%; /* 30px */
-    }
-</style>
 <div class="container my-5">
 
     <div class="row">
         <div class="col-md-9">
             <div class="card">
-                <div class="card-header card__header">
-                   Carrito
+                <div class="card-header cart__header">
+                    Carrito
                 </div>
                 @if($cartItems->isEmpty())
-                <p>Tu carrito está vacío.</p>
+                <h3 class="p-4 text-center">Tu carrito está vacío.</h3>
                 @else
                 @foreach($cartItems as $item)
-                <div class="card-body d-flex">
+                <div class="card-body d-flex align-items-center mb-3">
                     <div class="col-md-2">
-                        <img src="{{ $item->options->imagen }}" alt="{{ $item->name }}" style="width: 90px;">
+                        <img src="{{ $item->options->imagen }}" alt="{{ $item->name }}" class="img-fluid" style="max-width: 90px;">
                     </div>
                     <div class="col-md-4">  
-                        <h4 class="card__categoria">{{ $item->options->categoria }}</h4>
-                        <h4 class="card__titulo">{{ $item->name }}</h4>
+                        <h4 class="cart__categoria">{{ $item->options->categoria }}</h4>
+                        <h4 class="cart__titulo">{{ $item->name }}</h4>
                     </div>
-                    <div class="col-md-3 mt-4">
-                        <div class="d-flex">
-                            <div class="wrapper mb-4">
+                    <div class="col-md-3">
+                        <div class="d-flex align-items-center">
+                            <div class="wrapper-producto mb-2">
                                 <button class="plusminus" onclick="handleMinus('{{ $item->rowId }}')">-</button>
                                 <input type="number" class="form-control text-center border-0 form-control-sm cantidad-input{{ $item->rowId }}" name="qty" pattern="[0-9]+" title="Ingrese solo números" inputmode="numeric" min="1" value="{{ $item->qty }}" required>
                                 <button class="plusminus" onclick="handlePlus('{{ $item->rowId }}')">+</button>
                             </div>
-                         <div class=" ms-2">
-                             {{@$item->options->colores['color_seleccionado'];}} 
-                         </div>
-                        {{-- <div class="card-text mt-2 ms-2">{{ $item->options->colores }}</div> --}}
-                        </div>  
+                            <div class="ms-2">
+                                {{ @$item->options->colores['color_seleccionado'] }}
+                            </div>
+                        </div>
                     </div>
-                    <div class="col-md-2 mt-4">   
-                        <p class="card__precio">${{ number_format($item->price, 2, ',', '.') }}</p>
+                    <div class="col-md-3">
+                            <div class="d-flex align-items-center justify-content-around">
+                            <p class="cart__precio mt-2">${{ number_format($item->price, 2, ',', '.') }}</p>
+                        
+                            <img src="{{ asset('img/remove.png') }}" class="remove-item" data-rowid="{{ $item->rowId }}" style="cursor: pointer; width: 24px;">
+                        </div>
                     </div>
-                    <div class="col-md-1 mt-4">   
-                        <img src="{{ asset('img/remove.png') }}" class="remove-item" data-rowid="{{ $item->rowId }}" style="cursor: pointer;">    
-                    </div>
-              </div>
-              @endforeach
-              @endif
+                </div>
+                @endforeach
+                @endif
             </div>
-            <a href="{{route('categorias')}}" class="btn btn__white mt-3">< Seguir comprando</a>   
+            <a href="{{ route('categorias') }}" class="btn btn__white mt-3">< Seguir comprando</a>   
         </div>
+        
         <div class="col-md-3">
             <div class="card">
-                <div class="card-header card__header">
+                <div class="card-header cart__header">
                     Total del carrito
                 </div>
                 <div class="card-body">
+                    <form action="">
+                        @csrf
                     <div class="d-flex justify-content-between">
                         <h4 class="card-title">Subtotal</h4>
                         <span class="cart__numero" id="subtotal" >${{ $cartSubotal }}</span> <!-- Mostrar subtotal -->
@@ -158,16 +65,14 @@
                     <h4 class="card-title">Envio</h4>
                     <div class="d-flex my-3 justify-content-between">
                         <div class="form-check ">
-                          <input class="form-check-input" type="checkbox" value="" id="local" >
-                          <label class="form-check-label" for="local">
-                              Retiro local          
-                          </label>
+                            <input class="form-check-input envio-opcion" type="radio" data-texto='Retiro en local' data-costo="0" name="flexRadioDefault" >
+                                <div class='carrito-total-texto'>Retiro en local</div>
                         </div>
                         <div>Gratis</div>
                     </div>
                       <div class="d-flex my-3 justify-content-between">
                           <div class="form-check ">
-                            <input class="form-check-input" type="checkbox" value="" id="envio" >
+                            <input class="form-check-input" type="radio" value=""  data-texto='Envíos CABA y GBA' data-costo="0" name="flexRadioDefault" >
                             <label class="form-check-label" for="envio">
                                 Envios CABA y GBA <br>
                                 <small>Compras a partir de $50.000</small>
@@ -175,17 +80,18 @@
                           </div>
                           <div>Gratis</div>
                       </div>
+                    
                       <div class="d-flex justify-content-between my-3">
-                        <div class="form-check ">
-                          <input class="form-check-input" type="checkbox" value="" id="envio" >
-                          <label class="form-check-label" for="envio">
-                              Envios CABA y GBA      
-                          </label>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" id="envioCheckbox" name="flexRadioDefault">
+                            <label class="form-check-label" for="envioCheckbox">
+                                Envíos CABA y GBA      
+                            </label>
                         </div>
                         <div>Consultar</div>    
                     </div>
-                    <div class="d-flex">
-                        <input type="text" class="form-control" id="codigopostal" placeholder="Codigo Postal">
+                    <div id="codigoPostalContainer" style="display: none;">
+                        <input type="text" class="form-control my-3" id="codigopostal" placeholder="Código Postal">
                         <button type="submit" class="btn btn__rojo">Calcular</button>
                     </div>
                     <hr>
@@ -195,7 +101,8 @@
                         <span class="cart__numero" id="card-total">${{ $cartTotal }}</span> <!-- Mostrar total -->
                     </div>
                     <hr>
-                    <a type="submit" href="" class="btn btn__rojo w-100" >Realizar compra</a>
+                    <a type="submit" href="{{route('details.consumidor' )}}" class="btn btn__rojo w-100" >Realizar compra</a>
+                </form>
                 </div>
             </div>
         </div>
@@ -205,7 +112,20 @@
 
 @endsection
 @push('scripts')
+
 <script>
+    document.getElementById('envioCheckbox').addEventListener('change', function() {
+        var codigoPostalContainer = document.getElementById('codigoPostalContainer');
+        if (this.checked) {
+            codigoPostalContainer.style.display = 'block'; // Mostrar el contenedor
+        } else {
+            codigoPostalContainer.style.display = 'none'; // Ocultar el contenedor
+        }
+    });
+</script>
+<script>
+
+
      function handlePlus(rowId) {
     let input = document.querySelector('.cantidad-input' + rowId);
     let currentValue = parseInt(input.value);

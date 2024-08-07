@@ -1,83 +1,59 @@
 @extends('layouts.app')
 @section('title', $producto->nombre)
-@section('content')
+@section('content') 
+<div class="bg__breadcrumb">
+    <div class="container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+              <li class="breadcrumb-item"><a href="{{route('index')}}">Inicio</a></li>
+              <li class="breadcrumb-item"><a href="{{route('index')}}">{{$producto->categoria->nombre}}</a></li>
+              <strong class="breadcrumb-item active" >{{$producto->nombre}}</li>
+            </ol>
+          </nav>
+    </div>
+</div> 
 
-<style>
-        input[type="number"] {
-        -webkit-appearance: textfield !important;
-        -moz-appearance: textfield !important;
-        appearance: textfield !important;
-    }
-    
-    input[type=number]::-webkit-inner-spin-button,
-    input[type=number]::-webkit-outer-spin-button {
-        -webkit-appearance: none;
-    }
-    
-    .wrapper {
-    border-radius: 4px;
-    border: 1px solid var(--Gris, #D1D2D4);
-    width: 100%;
-    padding: 3px;
-    display: flex;
-
-    }
-    
-    .plusminus {
-        height: 100%;
-        width: 30%;
-        background: white;
-        border: none;
-        color: #000;
-        text-align: center;
-        font-family: 'Ubuntu';
-        font-size: 21px;
-        font-style: normal;
-        font-weight: 400;
-        line-height: normal;
-    }
-    
-    .num {
-        height: 100%;
-        width: 39%;
-        border: none;
-        color: #000;
-        text-align: center;
-        font-family: 'Ubuntu';
-        font-size: 19px;
-        font-style: normal;
-        font-weight: 400;
-        line-height: normal;
-    }
-</style>
 <div class="container my-5">
     <div class="row">
-        @foreach (json_decode($producto->galeria, true)  as $imagen)
-        <div class="col-6 col-md-6 mb-4">
-            <img src="{{ asset(Storage::url($imagen)) }}" class="w-100" alt="Imagen">
+        <div class="col-12 col-md-6 mb-4">
+            <div class="fotorama" data-nav="thumbs" data-width="100%" data-height="500" data-ratio="16/9">
+                @foreach (json_decode($producto->galeria, true) as $imagen)
+                    <img src="{{ asset(Storage::url($imagen)) }}" alt="Imagen" class="border" style="object-fit:cover;">
+                @endforeach
+            </div>
+            
+            
         </div>
-        
-        @endforeach
         <div class="col-md-6">
-            <h3>
+            <div class="d-flex">
+                <h4 class="producto__categoria ">
+                    {{$producto->categoria->nombre}}
+                </h4>
+                    
+                <span class=" ms-2 producto__codigo">
+                 |   {{$producto->codigo}}
+                </span>
+            </div>
+            <h3 class="producto__titulo">
                 {{$producto->nombre}}
             </h3>
+            <hr>
             <div class="d-flex flex-column ">
 
-                <span>{!!$producto->descripcion!!}</span>
-                <select name="color_{{ $producto->id }}" class="form-select w-25 my-5">
-                    <span>Seleccione el color</span>
+                <span class="producto__descripcion ">{!!$producto->descripcion!!}</span>
+                <span class="producto__descripcion mt-5">Seleccione el color</span>
+                <select name="color_{{ $producto->id }}" class="form-select w-25 mb-5">
                     @foreach ($producto->colores as $color)
                         <option value="{{ $color->nombre }}">{{ $color->nombre }}</option>
                     @endforeach
                 </select>
-                <p class="card-precio"> ${{ number_format($producto->precio, 2, ',', '.') }}</p>
                 <hr>
+                <p class="producto__precio "> ${{ number_format($producto->precio, 2, ',', '.') }}</p>
                 <div class="row mt-5">
 
                     <div class="col-6 col-md-6">
        
-                        <div class="wrapper ">
+                        <div class="wrapper-producto ">
                             <button class="plusminus" onclick="handleMinus({{ $producto->id }})">-</button>
                             <input type="number" class="form-control border-0 text-center form-control-sm cantidad-input{{$producto->id}}" name="qty" pattern="[0-9]+" title="Ingrese solo números" inputmode="numeric" min="1" value="1" required>
                             <button class="plusminus" onclick="handlePlus({{ $producto->id }})">+</button>
