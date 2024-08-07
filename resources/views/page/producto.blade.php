@@ -67,6 +67,10 @@
                             data-nombre="{{$producto->nombre}}"
                             data-precio="{{$producto->precio}}"
                             data-imagen="{{ asset(Storage::url($producto->imagen)) }}"
+                            data-descuento="{{$producto->descuento}}"
+                            data-cantidad="{{$producto->cantidad}}"
+                            data-cantidad_dos="{{$producto->cantidad_dos}}"
+                            data-descuento_dos="{{$producto->descuento_dos}}"
                             class="add-cart btn btn__white w-100 {{ !isset($producto->precio) ? 'disabled' : '' }}" {{ !isset($producto->precio) ? 'disabled' : '' }}>
                         Agregar al carrito
                     </button> 
@@ -77,14 +81,6 @@
         </div>
     </div>
 </div>
-
-
-
-
-
-
-
-
 
 
 @endsection
@@ -127,6 +123,12 @@
   // Obtener el color seleccionado
   let selectedColor = $(`select[name=color_${id}]`).val();
 
+    // Obtener los valores adicionales
+    let cantidad = $(this).data('cantidad');
+    let descuento = $(this).data('descuento');
+    let cantidadDos = $(this).data('cantidad_dos');
+    let descuentoDos = $(this).data('descuento_dos');
+
   // Validar cantidad
   if (!qty || qty <= 0) {
     toastr.error('Por favor, ingrese una cantidad válida.');
@@ -144,7 +146,11 @@
       precio: precio,
       imagen: imagen,
       color: selectedColor,
-      cantidad: qty
+      cantidad: qty,
+      cantidad: cantidad,
+      descuento: descuento,
+      cantidad_dos: cantidadDos,
+      descuento_dos: descuentoDos
     },
     success: function(data) {
       toastr.success('¡Producto añadido con éxito!');

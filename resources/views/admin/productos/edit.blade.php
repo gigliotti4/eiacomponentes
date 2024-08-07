@@ -25,9 +25,25 @@
             <label for="precio">Precio</label>
             <input type="text" class="form-control" id="precio" name="precio" value="{{ $producto->precio }}">
         </div>
+        
+    </div>
+
+    <div class="row">
+        <div class="form-group col-md-6">
+            <label for="cantidad">cantidad</label>
+            <input type="text" class="form-control" id="cantidad" name="cantidad" value="{{ $producto->cantidad }}">
+        </div>
         <div class="form-group col-md-6">
             <label for="descuento">Descuento</label>
             <input type="text" class="form-control" id="descuento" name="descuento" value="{{ $producto->descuento }}">
+        </div>
+        <div class="form-group col-md-6">
+            <label for="cantidad_dos">Cantidad dos</label>
+            <input type="text" class="form-control" id="cantidad_dos" name="cantidad_dos" value="{{ $producto->cantidad_dos }}">
+        </div>
+        <div class="form-group col-md-6">
+            <label for="descuento_dos">Descuento dos</label>
+            <input type="text" class="form-control" id="descuento_dos" name="descuento_dos" value="{{ $producto->descuento_dos }}">
         </div>
     </div>
 

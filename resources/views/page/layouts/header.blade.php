@@ -17,9 +17,17 @@
                 <div class="ms-auto">
                     <form id="logout-form" action="{{ route('logincliente.logout') }}" method="POST" style="display: inline;">
                         @csrf
-                        <button type="submit" class="btn btn__transparente" style="">{{ Auth::guard('logincliente')->user()->name }} (Cerrar Sessión)</button>
+                        <button type="submit" class="btn btn__rojo" style="">{{ Auth::guard('logincliente')->user()->name }} (Cerrar Sessión)</button>
                     </form>
                 </div>
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs('index') || request()->routeIs('empresa') || request()->routeIs('inyecciones') ? 'nav__menu__inicio' : 'nav__menu' }} {{ request()->routeIs('cart.index') ? 'active__header' : '' }}" href="{{ route('cart.index') }}">Pedidos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs('index') || request()->routeIs('empresa') || request()->routeIs('inyecciones') ? 'nav__menu__inicio' : 'nav__menu' }} {{ request()->routeIs('cart.details') ? 'active__header' : '' }}" href="{{ route('cart.details') }}">Carrito</a>
+                    </li>
+                </ul>
             @else
                 <!-- Login button -->
                 <div class="ms-auto">
@@ -43,15 +51,15 @@
                     <a href="{{route('cart.details.consumidor')}}" class="">
                         @if(request()->routeIs('index') || request()->routeIs('empresa') || request()->routeIs('inyecciones'))
                         <img src="{{ asset('img/shopping-cart-white.svg') }}" alt="">
-                        <span class="cart-count"></span>
+                        <span class="cart-count">{{$cartCount}}</span>
                         @else 
                         <img src="{{ asset('img/shopping-cart.svg') }}" alt="">
-                        <span class="cart-count"></span>
+                        <span class="cart-count">{{$cartCount}}</span>
                         @endif
                     </a>
                 </div>
                 
-            @endauth
+        
 
             <!-- Navbar links -->
             <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
@@ -77,6 +85,7 @@
                     <a class="nav-link {{ request()->routeIs('index') || request()->routeIs('empresa') || request()->routeIs('inyecciones') ? 'nav__menu__inicio' : 'nav__menu' }} {{ request()->routeIs('contacto.*') ? 'active__header' : '' }}" href="{{ route('contacto') }}">Contacto</a>
                 </li>
             </ul>
+            @endauth
         </div>
     </div>
 </nav>

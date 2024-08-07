@@ -64,6 +64,10 @@ class CartController extends Controller
             Cart::add($request->producto_id, $request->nombre, $request->cantidad, $request->precio, [
                 'imagen' => $request->imagen,
                 'categoria' => $request->categoria,
+                'cantidad' => $request->cantidad, // Agregar cantidad
+                'descuento' => $request->descuento, // Agregar descuento
+                'cantidad_dos' => $request->cantidad_dos, // Agregar cantidad_dos
+                'descuento_dos' => $request->descuento_dos, // Agregar descuento_dos
                 'colores' => [
                     'color_seleccionado' => $request->color
                 ]
@@ -126,33 +130,87 @@ class CartController extends Controller
     }
 
     public function cartSubtotal()
-        {
-            $subtotal = 0;
+{
+    $subtotal = 0;
 
-            foreach(Cart::content() as $product) {
-                $productSubtotal = $product->price * $product->qty; // Assuming price and qty are attributes
-                $subtotal += $productSubtotal;
-            }
-            // Format the subtotal as a float for consistency
-            $subtotal = number_format((float) $subtotal, 2, ',', '.');
+    foreach(Cart::content() as $product) {
+        $quantity = $product->qty;
+        $price = $product->price;
+        $discount = 0;
 
-            return $subtotal;
+        // Apply discounts based on quantity thresholds
+        if ($quantity >= $product->options->cantidad_dos) {
+            $discount = $product->options->descuento_dos;
+        } elseif ($quantity >= $product->options->cantidad) {
+            $discount = $product->options->descuento;
         }
 
-    public function cartTotal()
-    {
-        $total = 0;
-    
-        foreach(Cart::content() as $product) {
-            $productTotal = $product->price * $product->qty; // Assuming price and qty are attributes
-            $total += $productTotal;
-        }
-    
-        // Format the total as a float for consistency
-        $total = number_format((float) $total, 2, ',', '.');
-    
-        return $total;
+        // Calculate the product subtotal with the applied discount
+        $productSubtotal = ($price - ($price * ($discount / 100))) * $quantity;
+        $subtotal += $productSubtotal;
     }
+
+    // Format the subtotal as a float for consistency
+    $subtotal = number_format((float) $subtotal, 2, ',', '.');
+
+    return $subtotal;
+}
+
+public function cartTotal()
+{
+    $total = 0;
+
+    foreach (Cart::content() as $product) {
+        $quantity = $product->qty;
+        $price = $product->price;
+        $discount = 0;
+
+        // Apply discounts based on quantity thresholds
+        if ($quantity >= $product->options->cantidad_dos) {
+            $discount = $product->options->descuento_dos;
+        } elseif ($quantity >= $product->options->cantidad) {
+            $discount = $product->options->descuento;
+        }
+
+        // Calculate the product total with the applied discount
+        $productTotal = ($price - ($price * ($discount / 100))) * $quantity;
+        $total += $productTotal;
+    }
+
+    // Format the total as a float for consistency
+    $total = number_format((float) $total, 2, ',', '.');
+
+    return $total;
+}
+
+    // public function cartSubtotal()
+    //     {
+    //         $subtotal = 0;
+
+    //         foreach(Cart::content() as $product) {
+    //             $productSubtotal = $product->price * $product->qty; // Assuming price and qty are attributes
+    //             $subtotal += $productSubtotal;
+    //         }
+    //         // Format the subtotal as a float for consistency
+    //         $subtotal = number_format((float) $subtotal, 2, ',', '.');
+
+    //         return $subtotal;
+    //     }
+
+    // public function cartTotal()
+    // {
+    //     $total = 0;
+    
+    //     foreach(Cart::content() as $product) {
+    //         $productTotal = $product->price * $product->qty; // Assuming price and qty are attributes
+    //         $total += $productTotal;
+    //     }
+    
+    //     // Format the total as a float for consistency
+    //     $total = number_format((float) $total, 2, ',', '.');
+    
+    //     return $total;
+    // }
 
 
     public function update(Request $request)
@@ -195,7 +253,17 @@ class CartController extends Controller
 
 
 
-    public function cartdetailscomerciante()
+    // public function cartdetailscomerciante()
+    // {
+    //     $logo = Logo::first();
+    //     $redes = Rede::first();
+    //     $contacto = Contacto::first(); // Si sólo hay un contacto, puedes usar first()
+    //     $cartItems = Cart::content();
+    //     $cartSubotal = $this->cartSubtotal();
+    //     $cartTotal = $this->cartTotal();
+    //     return view('page.cart-comerciante.index', compact('cartItems','redes', 'contacto', 'logo', 'cartSubotal', 'cartTotal'));
+    // }
+    public function detailscomerciante()
     {
         $logo = Logo::first();
         $redes = Rede::first();
@@ -206,7 +274,6 @@ class CartController extends Controller
         return view('page.cart-comerciante.index', compact('cartItems','redes', 'contacto', 'logo', 'cartSubotal', 'cartTotal'));
     }
 
-
     public function cartdetailsconsumidor()
     {
         $logo = Logo::first();
@@ -215,7 +282,8 @@ class CartController extends Controller
         $cartItems = Cart::content();
         $cartSubotal = $this->cartSubtotal();
         $cartTotal = $this->cartTotal();
-        return view('page.cart-consumidor.carrito', compact('cartItems','redes', 'contacto', 'logo', 'cartSubotal', 'cartTotal'));
+        $cartCount = Cart::content()->count();
+        return view('page.cart-consumidor.carrito', compact('cartItems','redes', 'contacto', 'logo', 'cartSubotal', 'cartTotal', 'cartCount'));
     }
 
 
@@ -229,5 +297,6 @@ class CartController extends Controller
         $cartTotal = $this->cartTotal();
         return view('page.cart-consumidor.details-consumidor', compact('cartItems','redes', 'contacto', 'logo', 'cartSubotal', 'cartTotal'));
     }
+ 
 
 }

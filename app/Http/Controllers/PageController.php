@@ -19,6 +19,7 @@ use App\Models\Newsletter;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Http\Request;
+use CodersFree\Shoppingcart\Facades\Cart;
 use Illuminate\Support\Str;
 
 class PageController extends Controller
@@ -32,9 +33,9 @@ class PageController extends Controller
     $redes = Rede::first();
     $contacto = Contacto::first(); // Si sólo hay un contacto, puedes usar first()
     $sliders = Slider::where('seccion', 'inicio')->get();
-
+    $cartCount = Cart::content()->count();
     // Pasar los datos a la vista
-    return view('page.index', compact('inicio', 'redes', 'contacto', 'sliders', 'logo'));
+    return view('page.index', compact('inicio', 'redes', 'contacto', 'sliders', 'logo', 'cartCount'));
     }
 
 
@@ -44,9 +45,10 @@ class PageController extends Controller
     $empresa = Empresa::first();
     $redes = Rede::first();
     $contacto = Contacto::first(); // Si sólo hay un contacto, puedes usar first()
-   $sliders = Slider::where('seccion', 'empresa')->get();
+    $sliders = Slider::where('seccion', 'empresa')->get();
+    $cartCount = Cart::content()->count();
     // Pasar los datos a la vista
-    return view('page.empresa', compact('empresa', 'redes', 'contacto', 'logo', 'sliders'));
+    return view('page.empresa', compact('empresa', 'redes', 'contacto', 'logo', 'sliders', 'cartCount'));
     
     }
 
@@ -71,9 +73,10 @@ class PageController extends Controller
         $categorias = Categoria::orderBy('orden', 'asc')->get();
         $productos = Producto::orderBy('orden', 'asc')->get();
         $colores = Color::orderBy('orden', 'asc')->get();
+        $cartCount = Cart::content()->count();
        // $sliders = Slider::where('seccion', 'inicio')->get();
         // Pasar los datos a la vista
-        return view('page.categorias', compact('empresa', 'redes', 'contacto', 'logo', 'categorias', 'productos', 'colores'));
+        return view('page.categorias', compact('empresa', 'redes', 'contacto', 'logo', 'categorias', 'productos', 'colores', 'cartCount'));
         
         }
 
@@ -86,9 +89,10 @@ class PageController extends Controller
             $categorias = Categoria::orderBy('orden', 'asc')->get();
             $producto = Producto::find($id);
             $colores = Color::orderBy('orden', 'asc')->get();
+            $cartCount = Cart::content()->count();
            // $sliders = Slider::where('seccion', 'inicio')->get();
             // Pasar los datos a la vista
-            return view('page.producto', compact('empresa', 'redes', 'contacto', 'logo', 'categorias', 'producto', 'colores'));
+            return view('page.producto', compact('empresa', 'redes', 'contacto', 'logo', 'categorias', 'producto', 'colores', 'cartCount'));
             
             }
 

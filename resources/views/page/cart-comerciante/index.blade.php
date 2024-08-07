@@ -145,7 +145,7 @@
             </div>
             <a href="{{route('categorias')}}" class="btn btn__white mt-3">< Seguir comprando</a>   
         </div>
-        <div class="col-md-3">
+        {{-- <div class="col-md-3">
             <div class="card">
                 <div class="card-header card__header">
                     Total del carrito
@@ -198,7 +198,7 @@
                     <a type="submit" href="" class="btn btn__rojo w-100" >Realizar compra</a>
                 </div>
             </div>
-        </div>
+        </div> --}}
         
     </div>
 </div>

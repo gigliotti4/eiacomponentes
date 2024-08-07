@@ -3,7 +3,17 @@
 
 @section('content')
 
-
+<style>
+    .text-descuento{
+    color: #308C05;
+    /* Body/Regular/Body 16 */
+    font-family: "Work Sans";
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 150%; /* 24px */
+    }
+</style>
 <div class="container my-5">
 
     <div class="row">
@@ -38,8 +48,39 @@
                     </div>
                     <div class="col-md-3">
                             <div class="d-flex align-items-center justify-content-around">
-                            <p class="cart__precio mt-2">${{ number_format($item->price, 2, ',', '.') }}</p>
-                        
+                                <dv class="d-flex flex-column mt-3">
+
+                                    <p class="cart__precio m-0">
+                                        @php
+                                            $price = $item->price;
+                                            $quantity = $item->qty;
+                                            $discount = 0;
+                                    
+                                            // Determine which discount to apply based on quantity
+                                            if ($quantity >= $item->options->cantidad_dos) {
+                                                $discount = $item->options->descuento_dos;
+                                            } elseif ($quantity >= $item->options->cantidad) {
+                                                $discount = $item->options->descuento;
+                                            }
+                                    
+                                            // Calculate the discounted price
+                                            $discountedPrice = $price - ($price * ($discount / 100));
+                                        @endphp
+                                        ${{ number_format($discountedPrice, 2, ',', '.') }}
+                                    </p>
+                                    <p class="text-descuento m-0">
+                                        (
+                                        cant {{ $item->options->cantidad }}
+                                        {{ $item->options->descuento }}%
+                                         )
+                                    </p>
+                                    <p class="text-descuento m-0">
+                                        (
+                                        cant {{ $item->options->cantidad_dos }}
+                                        {{ $item->options->descuento_dos }}%
+                                         )
+                                    </p>
+                                </dv>
                             <img src="{{ asset('img/remove.png') }}" class="remove-item" data-rowid="{{ $item->rowId }}" style="cursor: pointer; width: 24px;">
                         </div>
                     </div>

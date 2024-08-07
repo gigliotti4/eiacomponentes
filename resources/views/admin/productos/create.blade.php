@@ -23,9 +23,24 @@
             <label for="precio">Precio</label>
             <input type="text" class="form-control" id="precio" name="precio">
         </div>
+       
+    </div>
+    <div class="row">
+        <div class="form-group col-md-6">
+            <label for="cantidad">cantidad</label>
+            <input type="text" class="form-control" id="cantidad" name="cantidad">
+        </div>
         <div class="form-group col-md-6">
             <label for="descuento">Descuento</label>
             <input type="text" class="form-control" id="descuento" name="descuento">
+        </div>
+        <div class="form-group col-md-6">
+            <label for="cantidad_dos">Cantidad dos</label>
+            <input type="text" class="form-control" id="cantidad_dos" name="cantidad_dos">
+        </div>
+        <div class="form-group col-md-6">
+            <label for="descuento_dos">Descuento dos</label>
+            <input type="text" class="form-control" id="descuento_dos" name="descuento_dos">
         </div>
     </div>
 
