@@ -15,7 +15,7 @@
     }
 </style>
 <div class="container my-5">
-
+{{-- @dd($cartItems) --}}
     <div class="row">
         <div class="col-md-9">
             <div class="card">

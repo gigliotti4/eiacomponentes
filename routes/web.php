@@ -122,6 +122,29 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::delete('destroy/{id}', [App\Http\Controllers\admin\ColorController::class, 'destroy'])->name('destroy');
         });
     
+
+        // Codigopostales routes
+            Route::prefix('codigospostales')->name('codigospostales.')->group(function () {
+                Route::get('/', [App\Http\Controllers\admin\CodigopostaleController::class, 'index'])->name('index');
+                Route::get('/create', [App\Http\Controllers\admin\CodigopostaleController::class, 'create'])->name('create');
+                Route::post('/store', [App\Http\Controllers\admin\CodigopostaleController::class, 'store'])->name('store');
+                Route::get('/edit/{id}', [App\Http\Controllers\admin\CodigopostaleController::class, 'edit'])->name('edit');
+                Route::put('/update/{id}', [App\Http\Controllers\admin\CodigopostaleController::class, 'update'])->name('update');
+                Route::delete('/destroy/{id}', [App\Http\Controllers\admin\CodigopostaleController::class, 'destroy'])->name('destroy');
+               
+            });
+
+             // Codigopostales routes
+             Route::prefix('zonaspostales')->name('zonaspostales.')->group(function () {
+                Route::get('/', [App\Http\Controllers\admin\ZonapostaleController::class, 'index'])->name('index');
+                Route::get('/create', [App\Http\Controllers\admin\ZonapostaleController::class, 'create'])->name('create');
+                Route::post('/store', [App\Http\Controllers\admin\ZonapostaleController::class, 'store'])->name('store');
+                Route::get('/edit/{id}', [App\Http\Controllers\admin\ZonapostaleController::class, 'edit'])->name('edit');
+                Route::put('/update/{id}', [App\Http\Controllers\admin\ZonapostaleController::class, 'update'])->name('update');
+                Route::delete('/destroy/{id}', [App\Http\Controllers\admin\ZonapostaleController::class, 'destroy'])->name('destroy');
+               
+            });
+
         // Users routes
         Route::prefix('users')->name('users.')->group(function () {
             Route::get('/', [App\Http\Controllers\admin\UserController::class, 'index'])->name('index');

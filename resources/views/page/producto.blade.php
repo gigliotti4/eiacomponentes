@@ -48,7 +48,7 @@
                     @endforeach
                 </select>
                 <hr>
-                <p class="producto__precio "> ${{ number_format($producto->precio, 2, ',', '.') }}</p>
+                <p class="producto__precio "> ${{ number_format($producto->precio, 2, ',', '.') }} x unidad</p>
                 <div class="row mt-5">
 
                     <div class="col-6 col-md-6">
@@ -115,6 +115,7 @@
     $('.add-cart').on('click', function() {
   let id = $(this).data('id');
   let codigo = $(this).data('codigo');
+  let categoria = $(this).data('categoria');
   let nombre = $(this).data('nombre');
   let precio = $(this).data('precio');
   let imagen = $(this).data('imagen');
@@ -141,12 +142,13 @@
     type: 'POST',
     data: {
       producto_id: id,
+      categoria:categoria,
       codigo: codigo,
       nombre: nombre,
       precio: precio,
       imagen: imagen,
       color: selectedColor,
-      cantidad: qty,
+      qty: qty,
       cantidad: cantidad,
       descuento: descuento,
       cantidad_dos: cantidadDos,
@@ -156,6 +158,8 @@
       toastr.success('¡Producto añadido con éxito!');
       // Actualizar la cantidad en el icono del carrito
       $('#cart-count').text(data.cartCount);
+      // Recargar la página después de añadir al carrito
+      location.reload();
     },
     error: function(data) {
       console.error(data.responseText);

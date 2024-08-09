@@ -61,7 +61,7 @@ class CartController extends Controller
     {
         try {
             // Add the product to the cart
-            Cart::add($request->producto_id, $request->nombre, $request->cantidad, $request->precio, [
+            Cart::add($request->producto_id, $request->nombre, $request->qty, $request->precio, [
                 'imagen' => $request->imagen,
                 'categoria' => $request->categoria,
                 'cantidad' => $request->cantidad, // Agregar cantidad

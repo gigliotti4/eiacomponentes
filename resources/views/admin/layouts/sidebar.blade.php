@@ -176,6 +176,17 @@
           <a href="{{ route('admin.loginclientes.index') }}" class="nav-link  ">Lista de Clientes</a>
         </nav>
       </div>
+
+      <div id="collapseLoginclientes" class="collapse">
+        <nav class="sidenav-menu-nested nav accordion">
+          <a href="{{ route('admin.codigospostales.index') }}" class="nav-link  ">Codigo postales</a>
+        </nav>
+      </div>
+      <div id="collapseLoginclientes" class="collapse">
+        <nav class="sidenav-menu-nested nav accordion">
+          <a href="{{ route('admin.zonaspostales.index') }}" class="nav-link  ">Zona postales</a>
+        </nav>
+      </div>
      
     </li>
 
