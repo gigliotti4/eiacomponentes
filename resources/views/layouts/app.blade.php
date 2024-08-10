@@ -22,7 +22,8 @@
      <script src="https://www.google.com/recaptcha/enterprise.js?render={{ env('RECAPTCHA_SITE_KEY') }}"></script>
      <link rel="stylesheet" href="{{asset('css/plantilla.css')}}">
      <link rel="stylesheet" href="{{asset('css/page.css')}}">
-
+  {{-- MERCADOPAGO --}}
+  <script src="https://sdk.mercadopago.com/js/v2"></script>
 
    
     </head>

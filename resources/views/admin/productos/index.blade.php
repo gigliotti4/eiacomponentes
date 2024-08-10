@@ -19,6 +19,7 @@
     <thead>
         <tr>
             <th>Orden</th>
+            <th>codigo</th>
             <th>Titulo</th>
             <th>Categoría</th>
             <th>Acciones</th>
@@ -28,6 +29,7 @@
         @foreach ($productos as $prod)
             <tr>
                 <td>{{ $prod->orden }}</td>
+                <td>{{ $prod->codigo }}</td>
                 <td>{{ $prod->nombre }}</td>
                 <td>{{ $prod->categoria->nombre ?? 'Sin categoría' }}</td>
                 <td>

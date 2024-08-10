@@ -30,7 +30,7 @@ Route::post('/cart-remove', [App\Http\Controllers\CartController::class, 'remove
 
 
 Route::middleware(['logincliente'])->group(function () {
-    Route::get('/cart-index', [App\Http\Controllers\CartController::class, 'indexcarrito'])->name('cart.index');
+    Route::get('/cart-index', [App\Http\Controllers\CartController::class, 'indexcomerciante'])->name('cart.index');
     Route::post('/add-to-cart', [App\Http\Controllers\CartController::class, 'addcomerciante'])->name('cart.add');
     Route::get('/cart-details', [App\Http\Controllers\CartController::class, 'detailscomerciante'])->name('cart.details');
     Route::post('/cart/update', [App\Http\Controllers\CartController::class, 'update'])->name('cart.update');
@@ -77,6 +77,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::get('/edit/{id}', [App\Http\Controllers\admin\EmpresaController::class, 'edit'])->name('edit');
             Route::put('/update/{id}', [App\Http\Controllers\admin\EmpresaController::class, 'update'])->name('update');
         });
+      
     
         // Contacto routes
         Route::prefix('contacto')->name('contacto.')->group(function () {
@@ -143,6 +144,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
                 Route::put('/update/{id}', [App\Http\Controllers\admin\ZonapostaleController::class, 'update'])->name('update');
                 Route::delete('/destroy/{id}', [App\Http\Controllers\admin\ZonapostaleController::class, 'destroy'])->name('destroy');
                
+            });
+
+            Route::prefix('carritoinfo')->name('carritoinfo.')->group(function () {
+                Route::get('/edit/{id}', [App\Http\Controllers\admin\CarritoinfoController::class, 'edit'])->name('edit');
+                Route::put('/update/{id}', [App\Http\Controllers\admin\CarritoinfoController::class, 'update'])->name('update');
             });
 
         // Users routes

@@ -187,6 +187,11 @@
           <a href="{{ route('admin.zonaspostales.index') }}" class="nav-link  ">Zona postales</a>
         </nav>
       </div>
+      <div id="collapseLoginclientes" class="collapse">
+        <nav class="sidenav-menu-nested nav accordion">
+          <a href="{{ route('admin.carritoinfo.edit', 1) }}" class="nav-link  ">aa</a>
+        </nav>
+      </div>
      
     </li>
 

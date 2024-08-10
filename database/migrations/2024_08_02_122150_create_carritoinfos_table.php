@@ -16,12 +16,15 @@ return new class extends Migration
             $table->string('desc_mp')->nullable();
             $table->string('desc_lo')->nullable();
             $table->string('desc_tb')->nullable();
+            $table->string('desc_fabricante')->nullable();
+            $table->string('desc_minorista')->nullable();
+            $table->string('desc_mayorista')->nullable();
             $table->text('info_retiro_local')->nullable();
             $table->text('info_envio_caba')->nullable();
             $table->text('info_envio_caba2')->nullable();
             $table->string('minimo')->default('50000');
             $table->text('info_expreso')->nullable();
-            $table->text('expreso_detalle')->default("Traslado del pedido de la fábrica al expreso a cargo del comprador");
+            $table->text('expreso_detalle')->nullable();
             $table->text('info_tc')->nullable();
             $table->text('info_tb')->nullable();
             $table->text('info_pago_local')->nullable();
