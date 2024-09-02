@@ -28,6 +28,8 @@ Route::post('/cart-update', [App\Http\Controllers\CartController::class, 'update
 Route::post('/cart-remove', [App\Http\Controllers\CartController::class, 'removeconsumidor'])->name('cart.remove.consumidor');
 
 
+Route::post('/order/process', [App\Http\Controllers\CartController::class, 'processOrder'])->name('processOrder');
+
 
 Route::middleware(['logincliente'])->group(function () {
     Route::get('/cart-index', [App\Http\Controllers\CartController::class, 'indexcomerciante'])->name('cart.index');

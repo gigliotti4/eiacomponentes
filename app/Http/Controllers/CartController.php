@@ -147,11 +147,12 @@ class CartController extends Controller
         $logo = Logo::first();
         $redes = Rede::first();
         $contacto = Contacto::first(); // Si sólo hay un contacto, puedes usar first()
+        $informacion = Carritoinfo::first(); // Si sólo hay un contacto, puedes usar first()
         $cartItems = Cart::content();
         $cartSubotal = $this->cartSubtotal();
         $cartTotal = $this->cartTotal();
         $cartCount = Cart::content()->count();
-        return view('page.cart-consumidor.carrito', compact('cartItems','redes', 'contacto', 'logo', 'cartSubotal', 'cartTotal', 'cartCount'));
+        return view('page.cart-consumidor.carrito', compact('cartItems','redes', 'contacto', 'logo', 'cartSubotal', 'cartTotal', 'cartCount', 'informacion'));
     }
 
 
@@ -163,7 +164,8 @@ class CartController extends Controller
         $cartItems = Cart::content();
         $cartSubotal = $this->cartSubtotal();
         $cartTotal = $this->cartTotal();
-        return view('page.cart-consumidor.details-consumidor', compact('cartItems','redes', 'contacto', 'logo', 'cartSubotal', 'cartTotal'));
+        $cartCount = Cart::content()->count();
+        return view('page.cart-consumidor.details-consumidor', compact('cartItems','redes', 'contacto', 'logo', 'cartSubotal', 'cartTotal', 'cartCount'));
     }
 
     
@@ -395,6 +397,109 @@ class CartController extends Controller
             return response()->json(['error' => 'Hubo un error al agregar el producto al carrito.'], 500);
         }
     }
+
+
+    public function processOrder(Request $request)
+    {
+        $validated = $request->validate([
+            'envio' => 'required|string',
+            'codigo_postal' => 'nullable|string|max:10',
+        ]);
+        $logo = Logo::first();
+        $redes = Rede::first();
+        $contacto = Contacto::first(); // Si sólo hay un contacto, puedes usar first()
+        $cartItems = Cart::content();
+        $cartSubotal = $this->cartSubtotal();
+        $cartTotal = $this->cartTotal();
+        $carritoinfo =Carritoinfo::first();
+           // Get the updated cart count
+           $cartCount = Cart::content()->count();
+        // Guardar los datos validados en una variable
+        $datos = $validated;
+
+    // Pasar la variable a la vista
+    return view('page.cart-consumidor.details-consumidor', compact('datos', 'cartItems','redes', 'contacto', 'logo', 'cartSubotal', 'cartTotal', 'carritoinfo','cartCount'));
+    }
+    
+
+
+    public function processCheckout(Request $request)
+{
+    // Valida los datos del formulario
+    $validated = $request->validate([
+        'nombreApellido' => 'required|string|max:255',
+        'dniCuit' => 'required|string|max:20',
+        'email' => 'required|email|max:255',
+        'celular' => 'required|string|max:20',
+        'direccion' => 'required|string|max:255',
+        'localidad' => 'required|string|max:255',
+        'provincia' => 'required|string|max:255',
+        'codigoPostal' => 'required|string|max:10',
+        'texto' => 'nullable|string',
+        'metododepago' => 'required|string',
+        'envio' => 'required|string',
+    ]);
+
+    try {
+        // Procesa la compra, guardando la información en la base de datos
+        $order = new Orderconsumidor();
+        $order->nombre_apellido = $validated['nombreApellido'];
+        $order->dni_cuit = $validated['dniCuit'];
+        $order->email = $validated['email'];
+        $order->celular = $validated['celular'];
+        $order->direccion = $validated['direccion'];
+        $order->localidad = $validated['localidad'];
+        $order->provincia = $validated['provincia'];
+        $order->codigo_postal = $validated['codigoPostal'];
+        $order->texto_adicional = $validated['texto'];
+        $order->metodo_pago = $validated['metododepago'];
+        $order->envio = $validated['envio'];
+
+        // Calcula el subtotal, descuento y total
+        $subtotal = Cart::subtotal(2, '.', ''); // Subtotal del carrito
+        $discount = 0; // Inicialmente sin descuento
+
+        // Aplica el descuento según el método de pago
+        switch ($validated['metododepago']) {
+            case 'transferencia':
+                $discount = $subtotal * 0.05; // 5% de descuento
+                break;
+            case 'efectivo':
+                $discount = $subtotal * 0.10; // 10% de descuento
+                break;
+            default:
+                $discount = 0;
+        }
+
+        // Calcular el total después del descuento
+        $total = $subtotal - $discount;
+
+        // Guardar los valores en el modelo Orderconsumidor
+        $order->subtotal = $subtotal;
+        $order->descuento = $discount;
+        $order->total = $total;
+
+        // Convierte los items del carrito en JSON y guárdalos
+        $cartItems = Cart::content(); // Obtén los productos del carrito
+        $order->cart_items = json_encode($cartItems); // Guarda los items en formato JSON
+        
+        // Guardar el pedido
+        $order->save();
+
+        // Limpiar el carrito después del procesamiento
+        Cart::clear();
+
+        // Redirigir con un mensaje de éxito
+        return redirect()->route('checkout.success')->with('success', 'Compra realizada con éxito.');
+    } catch (\Exception $e) {
+        // Registrar el error
+        Log::error('Error al procesar la compra: ' . $e->getMessage());
+
+        // Redirigir con un mensaje de error
+        return redirect()->back()->with('error', 'Hubo un error al procesar su compra. Inténtelo de nuevo.');
+    }
+}
+
 
 
 }

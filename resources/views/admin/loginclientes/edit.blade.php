@@ -1,7 +1,9 @@
 @extends('admin.layouts.master')
 
 @section('content')
+
 <h3>Editar Cliente</h3>
+
 <form method="POST" action="{{ route('admin.loginclientes.update', $cliente->id) }}">
     @csrf
     @method('PUT')

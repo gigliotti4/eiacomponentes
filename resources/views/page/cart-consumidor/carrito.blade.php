@@ -21,6 +21,7 @@
             <div class="card">
                 <div class="card-header cart__header">
                     Carrito
+                 
                 </div>
                 @if($cartItems->isEmpty())
                 <h3 class="p-4 text-center">Tu carrito está vacío.</h3>
@@ -97,57 +98,79 @@
                     Total del carrito
                 </div>
                 <div class="card-body">
-                    <form action="">
+                    <form action="{{ route('processOrder') }}" method="POST"> <!-- Asegúrate de tener la ruta correcta -->
                         @csrf
-                    <div class="d-flex justify-content-between">
-                        <h4 class="card-title">Subtotal</h4>
-                        <span class="cart__numero" id="subtotal" >${{ $cartSubotal }}</span> <!-- Mostrar subtotal -->
-                    </div>
-                    <h4 class="card-title">Envio</h4>
-                    <div class="d-flex my-3 justify-content-between">
-                        <div class="form-check ">
-                            <input class="form-check-input envio-opcion" type="radio" data-texto='Retiro en local' data-costo="0" name="flexRadioDefault" >
-                                <div class='carrito-total-texto'>Retiro en local</div>
+                        <div class="d-flex justify-content-between">
+                            <h4 class="card-title">Subtotal</h4>
+                            <span class="cart__numero" id="subtotal">${{ $cartSubotal }}</span> <!-- Mostrar subtotal -->
                         </div>
-                        <div>Gratis</div>
-                    </div>
-                      <div class="d-flex my-3 justify-content-between">
-                          <div class="form-check ">
-                            <input class="form-check-input" type="radio" value=""  data-texto='Envíos CABA y GBA' data-costo="0" name="flexRadioDefault" >
-                            <label class="form-check-label" for="envio">
-                                Envios CABA y GBA <br>
-                                <small>Compras a partir de $50.000</small>
-                            </label>
-                          </div>
-                          <div>Gratis</div>
-                      </div>
-                    
-                      <div class="d-flex justify-content-between my-3">
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" id="envioCheckbox" name="flexRadioDefault">
-                            <label class="form-check-label" for="envioCheckbox">
-                                Envíos CABA y GBA      
-                            </label>
+                        
+                        <h4 class="card-title">Envio</h4>
+        
+                        <!-- Retiro en local -->
+                        <div class="d-flex my-3 justify-content-between">
+                            <div class="form-check">
+                                <input class="form-check-input envio-opcion" type="radio" value="Retiro Local" name="envio" data-texto="Retiro en local" data-costo="0" checked>
+                                <label class='carrito-total-texto' for="envioLocal">Retiro en local</label>
+                            </div>
+                            <div>Gratis</div>
                         </div>
-                        <div>Consultar</div>    
-                    </div>
-                    <div id="codigoPostalContainer" style="display: none;">
-                        <input type="text" class="form-control my-3" id="codigopostal" placeholder="Código Postal">
-                        <button type="submit" class="btn btn__rojo">Calcular</button>
-                    </div>
-                    <hr>
-                    <div class="d-flex justify-content-between">
-
-                        <h4 class="card-title">Total</h4>
-                        <span class="cart__numero" id="card-total">${{ $cartTotal }}</span> <!-- Mostrar total -->
-                    </div>
-                    <hr>
-                    <a type="submit" href="{{route('details.consumidor' )}}" class="btn btn__rojo w-100" >Realizar compra</a>
-                </form>
+                        @if($informacion->minimo >= $cartTotal)
+                        <!-- Envios CABA y GBA Gratis -->
+                        <div class="d-flex my-3 justify-content-between">
+                            <div class="form-check">
+                                <input class="form-check-input envio-opcion" type="radio" value="Envio CABA GBA" name="envio" data-texto="Envíos CABA y GBA" data-costo="0">
+                                <label class="form-check-label" for="envioGratis">
+                                    Envios CABA y GBA <br>
+                                    <small>Compras a partir de $50.000</small>
+                                </label>
+                            </div>
+                            <div>Gratis</div>
+                        </div>
+                        @else
+                        <div class="d-flex my-3 justify-content-between">
+                            <div class="form-check">
+                                <input class="form-check-input envio-opcion" disabled  type="radio" value="Envio CABA GBA" name="envio" data-texto="Envíos CABA y GBA" data-costo="0">
+                                <label class="form-check-label" for="envioGratis">
+                                    Envios CABA y GBA <br>
+                                    <small>Compras a partir de $50.000</small>
+                                </label>
+                            </div>
+                            <div>Gratis</div>
+                        </div>
+                        @endif
+        
+                        <!-- Envios CABA y GBA Consultar -->
+                        <div class="d-flex justify-content-between my-3">
+                            <div class="form-check">
+                                <input class="form-check-input envio-opcion" type="radio" id="envioCheckbox" value="Envio CABA GBA" name="envio">
+                                <label class="form-check-label" for="envioCheckbox">Envíos CABA y GBA</label>
+                            </div>
+                            <div>Consultar</div>
+                        </div>
+        
+                        <!-- Código Postal (solo visible si se selecciona el último envío) -->
+                        <div id="codigoPostalContainer" style="display: none;">
+                            <input type="text" class="form-control my-3" id="codigopostal" name="codigo_postal" placeholder="Código Postal">
+                            <button type="submit" class="btn btn__rojo">Calcular</button>
+                        </div>
+        
+                        <hr>
+        
+                        <!-- Mostrar el total -->
+                        <div class="d-flex justify-content-between">
+                            <h4 class="card-title">Total</h4>
+                            <span class="cart__numero" id="card-total">${{ $cartTotal }}</span> <!-- Mostrar total -->
+                        </div>
+        
+                        <hr>
+        
+                        <!-- Botón para realizar la compra -->
+                        <button type="submit" class="btn btn__rojo w-100">Realizar compra</button>
+                    </form>
                 </div>
             </div>
         </div>
-        
     </div>
 </div>
 
@@ -155,13 +178,16 @@
 @push('scripts')
 
 <script>
-    document.getElementById('envioCheckbox').addEventListener('change', function() {
-        var codigoPostalContainer = document.getElementById('codigoPostalContainer');
-        if (this.checked) {
-            codigoPostalContainer.style.display = 'block'; // Mostrar el contenedor
-        } else {
-            codigoPostalContainer.style.display = 'none'; // Ocultar el contenedor
-        }
+    // Mostrar el campo de Código Postal solo si se selecciona el último envío
+    document.querySelectorAll('.envio-opcion').forEach(function(radio) {
+        radio.addEventListener('change', function() {
+            var codigoPostalContainer = document.getElementById('codigoPostalContainer');
+            if (this.value === 'envio_caba_gba_consultar') {
+                codigoPostalContainer.style.display = 'block';
+            } else {
+                codigoPostalContainer.style.display = 'none';
+            }
+        });
     });
 </script>
 <script>
