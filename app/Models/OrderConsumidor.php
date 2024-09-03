@@ -9,7 +9,7 @@ class OrderConsumidor extends Model
 {
     use HasFactory;
 
-    protected $table = 'orderconsumidor';
+    protected $table = 'orderconsumidores';
 
     // Define the fields that are mass assignable
     protected $fillable = [

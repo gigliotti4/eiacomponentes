@@ -28,7 +28,8 @@ Route::post('/cart-update', [App\Http\Controllers\CartController::class, 'update
 Route::post('/cart-remove', [App\Http\Controllers\CartController::class, 'removeconsumidor'])->name('cart.remove.consumidor');
 
 
-Route::post('/order/process', [App\Http\Controllers\CartController::class, 'processOrder'])->name('processOrder');
+Route::get('/order/process', [App\Http\Controllers\CartController::class, 'processOrder'])->name('processOrder');
+Route::post('/check/process', [App\Http\Controllers\CartController::class, 'processCheckout2'])->name('processCheckout2');
 
 
 Route::middleware(['logincliente'])->group(function () {

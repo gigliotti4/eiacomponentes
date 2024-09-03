@@ -98,8 +98,8 @@
                     Total del carrito
                 </div>
                 <div class="card-body">
-                    <form action="{{ route('processOrder') }}" method="POST"> <!-- Asegúrate de tener la ruta correcta -->
-                        @csrf
+                    <form action="{{ route('processOrder', ) }}" method="GET"> <!-- Asegúrate de tener la ruta correcta -->
+                    
                         <div class="d-flex justify-content-between">
                             <h4 class="card-title">Subtotal</h4>
                             <span class="cart__numero" id="subtotal">${{ $cartSubotal }}</span> <!-- Mostrar subtotal -->

@@ -2,12 +2,20 @@
 @section('title', 'Detalle Carrito')
 
 @section('content')
+@foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                    @endforeach
 
+                    @if(session()->has('success'))
+                    <div class="alert alert-success">
+                        {{ session()->get('success') }}
+                    </div>
+                @endif
+<form action="{{ route('processCheckout2') }}" method="POST"> <!-- Asegúrate de tener la ruta correcta -->
+    @csrf
 <div class="container my-5">
     <div class="row">
         <div class="col-md-8">
-            <form action="" method="POST">
-                @csrf
                 <div class="row">
                 <div class="form-group col-md-6 ">
                     <label for="nombreApellido">Nombre y Apellido / Razón social*</label>
@@ -73,6 +81,7 @@
                     <hr>
                     <h4 class="card-title">Envio</h4>
                     {{ $datos['envio'] }}
+                    <input type="hidden" name="envio" value="{{$datos['envio']}}">
                     <hr>
                     <h4 class="card-title">Pago</h4>
                     <div class="form-group">
@@ -103,14 +112,14 @@
                     </div>
                     <hr>
                     {{-- <div id="selected-payment-method"></div> --}}
-                    <a type="submit" href="" class="btn btn__rojo w-100">Realizar compra</a>
+                    <button type="submit" class="btn btn__rojo w-100">Realizar compra</button>
                 </div>
             </div>
         </div>
         
-       
     </div>
 </div>
+</form>
 
 
 @endsection

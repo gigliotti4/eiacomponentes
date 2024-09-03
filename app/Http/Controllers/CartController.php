@@ -10,6 +10,7 @@ use App\Models\Color;
 use App\Models\Carritoinfo;
 use App\Models\Zonapostale;
 use App\Models\Codigopostale;
+use App\Models\OrderConsumidor;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
@@ -401,8 +402,9 @@ class CartController extends Controller
 
     public function processOrder(Request $request)
     {
+
         $validated = $request->validate([
-            'envio' => 'required|string',
+            'envio' => 'nullable|string',
             'codigo_postal' => 'nullable|string|max:10',
         ]);
         $logo = Logo::first();
@@ -423,22 +425,24 @@ class CartController extends Controller
     
 
 
-    public function processCheckout(Request $request)
+    public function processCheckout2(Request $request)
 {
+
     // Valida los datos del formulario
     $validated = $request->validate([
-        'nombreApellido' => 'required|string|max:255',
-        'dniCuit' => 'required|string|max:20',
-        'email' => 'required|email|max:255',
-        'celular' => 'required|string|max:20',
-        'direccion' => 'required|string|max:255',
-        'localidad' => 'required|string|max:255',
-        'provincia' => 'required|string|max:255',
-        'codigoPostal' => 'required|string|max:10',
+        'nombreApellido' => 'nullable|string|max:255',
+        'dniCuit' => 'nullable|string|max:20',
+        'email' => 'nullable|email|max:255',
+        'celular' => 'nullable|string|max:20',
+        'direccion' => 'nullable|string|max:255',
+        'localidad' => 'nullable|string|max:255',
+        'provincia' => 'nullable|string|max:255',
+        'codigoPostal' => 'nullable|string|max:10',
         'texto' => 'nullable|string',
-        'metododepago' => 'required|string',
-        'envio' => 'required|string',
+        'metododepago' => 'nullable|string',
+        'envio' => 'nullable',
     ]);
+    // dd($validated);
 
     try {
         // Procesa la compra, guardando la información en la base de datos
@@ -483,6 +487,7 @@ class CartController extends Controller
         $cartItems = Cart::content(); // Obtén los productos del carrito
         $order->cart_items = json_encode($cartItems); // Guarda los items en formato JSON
         
+       dd($order);
         // Guardar el pedido
         $order->save();
 
@@ -490,7 +495,7 @@ class CartController extends Controller
         Cart::clear();
 
         // Redirigir con un mensaje de éxito
-        return redirect()->route('checkout.success')->with('success', 'Compra realizada con éxito.');
+        return redirect()->back()->with('success', 'Compra realizada con éxito.');
     } catch (\Exception $e) {
         // Registrar el error
         Log::error('Error al procesar la compra: ' . $e->getMessage());
