@@ -25,27 +25,7 @@ class CartController extends Controller
     private $access_token = "APP_USR-718838766436740-060309-eb7974cf39ee66d95053449994254c83-621563634";
     private $public_key = "APP_USR-0a769e86-ff65-4388-991f-e4038f5679c7";
 
-    public function carrito(){
-        
-        $cart = Cart::content();
-        $informacion = Carritoinfo::find(1);
-        if(Auth::guard('web')->check()){
-            $cp = Auth::guard('web')->user()->cp;
-            $result = Codigopostale::where('cp', $cp)->get()->first();
-            if($result){
-                $zona = Codigopostale::where('cp', $cp)->get()->first()->zona;
-                $costo = Zonapostale::where('nombre', $zona)->get()->first()->costo;
-            } else {
-                $costo = 'Consultar';
-                $cp = '';
-            }
-        } else {
-            $costo = 'Consultar';
-            $cp = '';
-        }
-        
-        return view('frontend/carrito', compact('cart', 'informacion', 'costo', 'cp'));
-    }
+
 
     public function pedido(Request $request){
         $contenido = file_get_contents('https://apis.datos.gob.ar/georef/api/provincias?orden=nombre');
@@ -83,14 +63,6 @@ class CartController extends Controller
             "unit_price" => floatval(Carrito::subtotal_final()) * (1 - (Carrito::find(1)->desc_mp / 100))
         );
         
-        //$product2 = array(
-        //    "id" => "9012345678",
-        //    "title" => "Product 2 Title",
-        //    "description" => "Product 2 Description",
-        //    "currency_id" => "ARS",
-        //    "quantity" => 5,
-        //    "unit_price" => 19.90
-        //);
         
         // Mount the array of products that will integrate the purchase amount
         $items = array($product1);
@@ -142,9 +114,35 @@ class CartController extends Controller
         $preference = $client->create($request);
         return $preference;
     }
+    public function calcularEnvio(Request $request)
+    {
+        // Validar que se haya ingresado un código postal
+        $request->validate([
+             'codigo_postal' => 'required|exists:codigos_postales,cp'
+         ]);
+
+        // Buscar la zona asociada al código postal
+        $codigoPostal = Codigopostale::where('cp', $request->codigo_postal)->first();
+        if ($codigoPostal) {
+            
+            $zona = $codigoPostal->zona;
+            // Encuentra el costo de la zona
+            $zonaPostal = Zonapostale::where('nombre', $zona)->first();
+            $costo = $zonaPostal->costo;
+            //dd($costo);
+
+            // Devolver el costo como respuesta
+            return response()->json(['costo' => $costo], 200);
+        }
+
+        return response()->json(['error' => 'Código postal no encontrado'], 404);
+    }
+
 
     public function cartdetailsconsumidor()
     {
+     
+
         $logo = Logo::first();
         $redes = Rede::first();
         $contacto = Contacto::first(); // Si sólo hay un contacto, puedes usar first()
@@ -159,6 +157,7 @@ class CartController extends Controller
 
     public function detailsconsumidor()
     {
+
         $logo = Logo::first();
         $redes = Rede::first();
         $contacto = Contacto::first(); // Si sólo hay un contacto, puedes usar first()
@@ -356,7 +355,7 @@ class CartController extends Controller
 
     public function detailscomerciante()
     {
-        
+      
         $logo = Logo::first();
         $redes = Rede::first();
         $contacto = Contacto::first(); // Si sólo hay un contacto, puedes usar first()
@@ -425,7 +424,7 @@ class CartController extends Controller
     
 
 
-    public function processCheckout2(Request $request)
+public function processCheckout2(Request $request)
 {
 
     // Valida los datos del formulario

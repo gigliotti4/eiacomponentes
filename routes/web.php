@@ -26,6 +26,7 @@ Route::get('/cart-details-consumidor', [App\Http\Controllers\CartController::cla
 Route::get('/details-consumidor', [App\Http\Controllers\CartController::class, 'detailsconsumidor'])->name('details.consumidor');
 Route::post('/cart-update', [App\Http\Controllers\CartController::class, 'updateconsumidor'])->name('cart.update.consumidor');
 Route::post('/cart-remove', [App\Http\Controllers\CartController::class, 'removeconsumidor'])->name('cart.remove.consumidor');
+Route::post('/calcular-envio', [App\Http\Controllers\CartController::class, 'calcularEnvio'])->name('calcular.envio');
 
 
 Route::get('/order/process', [App\Http\Controllers\CartController::class, 'processOrder'])->name('processOrder');

@@ -15,7 +15,7 @@
     }
 </style>
 <div class="container my-5">
-{{-- @dd($cartItems) --}}
+
     <div class="row">
         <div class="col-md-9">
             <div class="card">
@@ -140,23 +140,27 @@
                         </div>
                         @endif
         
-                        <!-- Envios CABA y GBA Consultar -->
-                        <div class="d-flex justify-content-between my-3">
-                            <div class="form-check">
-                                <input class="form-check-input envio-opcion" type="radio" id="envioCheckbox" value="Envio CABA GBA" name="envio">
-                                <label class="form-check-label" for="envioCheckbox">Envíos CABA y GBA</label>
-                            </div>
-                            <div>Consultar</div>
-                        </div>
-        
-                        <!-- Código Postal (solo visible si se selecciona el último envío) -->
-                        <div id="codigoPostalContainer" style="display: none;">
-                            <input type="text" class="form-control my-3" id="codigopostal" name="codigo_postal" placeholder="Código Postal">
-                            <button type="submit" class="btn btn__rojo">Calcular</button>
-                        </div>
-        
+                     <!-- Envios CABA y GBA Consultar -->
+                <div class="d-flex justify-content-between my-3">
+                    <div class="form-check">
+                        <input class="form-check-input envio-opcion" type="radio" id="envioCheckbox" value="EnvioCABAConsultar" name="envio" data-costo="0">
+                        <label class="form-check-label" for="envioCheckbox">Envíos CABA y GBA</label>
+                    </div>
+                    <div>Consultar</div>
+                </div>
+
+                <!-- Código Postal (solo visible si se selecciona el último envío) -->
+                
+                <div id="codigoPostalContainer" style="display: none;">
+                    <div class="d-flex">
+                        <input type="text" class="form-control" id="codigopostal" name="codigo_postal" placeholder="Código Postal">
+                        <button type="button" class="btn btn__rojo" id="calcularEnvio">Calcular</button>
+                    </div>
+                    <strong id="costoEnvio" class="mt-2"></strong> <!-- Aquí se mostrará el costo -->
+                   
+                </div>
+                        
                         <hr>
-        
                         <!-- Mostrar el total -->
                         <div class="d-flex justify-content-between">
                             <h4 class="card-title">Total</h4>
@@ -178,22 +182,89 @@
 @push('scripts')
 
 <script>
-    // Mostrar el campo de Código Postal solo si se selecciona el último envío
+// $(document).ready(function() {
+//     // Verificar si "EnvioCABAConsultar" está seleccionado antes de calcular el envío
+//     $('#calcularEnvio').on('click', function() {
+//         var envioSeleccionado = $('input[name="envio"]:checked').val();
+
+//         // Solo calcular si el envío seleccionado es "EnvioCABAConsultar"
+//         if (envioSeleccionado === 'EnvioCABAConsultar') {
+//             var codigoPostal = $('#codigopostal').val().trim();
+
+//             if (codigoPostal === '') {
+//                 $('#costoEnvio').text('Por favor, ingrese un código postal válido.');
+//                 return;
+//             }
+
+//             $.ajax({
+//                 url: '{{ route('calcular.envio') }}',
+//                 type: 'POST',
+//                 dataType: 'json',
+//                 headers: {
+//                     'X-CSRF-TOKEN': '{{ csrf_token() }}'
+//                 },
+//                 data: {
+//                     codigo_postal: codigoPostal
+//                 },
+//                 success: function(data) {
+//                     if (data.costo) {
+//                         $('#costoEnvio').text('Costo de Envío: $' + data.costo);
+
+//                         // Obtener el texto del subtotal y remover caracteres no numéricos
+//                         var subtotalText = $('#subtotal').text().replace(/[^0-9.,-]+/g, "");
+
+//                         // Separar antes y después de la coma/punto decimal
+//                         var subtotalParteEntera = subtotalText.split(/[,.]/)[0];
+
+//                         // Convertir la parte entera a número
+//                         var subtotal = parseFloat(subtotalParteEntera);
+
+//                         // Asegurarse de que costoEnvio es un número
+//                         var costoEnvio = parseFloat(data.costo);
+
+//                         // Verificar que ambos valores sean válidos
+//                         if (!isNaN(subtotal) && !isNaN(costoEnvio)) {
+//                             // Sumar subtotal y costo de envío
+//                             var total = subtotal + costoEnvio;
+
+//                             // Mostrar el total en el card-total
+//                             $('#card-total').text('$' + total.toFixed(2).replace('.', ','));
+//                         } else {
+//                             $('#card-total').text('Error en los datos.');
+//                         }
+//                     } else {
+//                         $('#costoEnvio').text('Error: ' + data.error);
+//                     }
+//                 },
+//                 error: function(xhr, status, error) {
+//                     console.error('Error al calcular el costo de envío:', error);
+//                     $('#costoEnvio').text('Hubo un error al calcular el costo de envío.');
+//                 }
+//             });
+//         } else {
+//             // Si no está seleccionado "EnvioCABAConsultar", restablecer el total original
+//             var subtotalOriginal = $('#subtotal').text();
+//             $('#card-total').text(subtotalOriginal); // Restaurar el total original
+//             $('#costoEnvio').text(''); // Limpiar cualquier mensaje de costo de envío
+//         }
+//     });
+// });
+
+
+// Mostrar el campo de Código Postal solo si se selecciona el último envío
     document.querySelectorAll('.envio-opcion').forEach(function(radio) {
         radio.addEventListener('change', function() {
             var codigoPostalContainer = document.getElementById('codigoPostalContainer');
-            if (this.value === 'envio_caba_gba_consultar') {
+            if (this.value === 'EnvioCABAConsultar') {
                 codigoPostalContainer.style.display = 'block';
             } else {
                 codigoPostalContainer.style.display = 'none';
             }
         });
     });
-</script>
-<script>
 
 
-     function handlePlus(rowId) {
+function handlePlus(rowId) {
     let input = document.querySelector('.cantidad-input' + rowId);
     let currentValue = parseInt(input.value);
     if (!isNaN(currentValue)) {
