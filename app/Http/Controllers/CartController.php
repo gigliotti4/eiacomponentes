@@ -18,125 +18,360 @@ use Illuminate\Support\Facades\Auth;
 use Exception;
 use MercadoPago\MercadoPagoConfig;
 use MercadoPago\Client\Preference\PreferenceClient;
+use MercadoPago\Exceptions\MPApiException;
 
 class CartController extends Controller
 {
 
-    private $access_token = "APP_USR-718838766436740-060309-eb7974cf39ee66d95053449994254c83-621563634";
-    private $public_key = "APP_USR-0a769e86-ff65-4388-991f-e4038f5679c7";
-
-
-
-    public function pedido(Request $request){
-        $contenido = file_get_contents('https://apis.datos.gob.ar/georef/api/provincias?orden=nombre');
-        $datos = json_decode($contenido, true);
-        $provincias = $datos['provincias'];
-        if(Auth::guard('web')->check() && $request->cp_envio != Auth::guard('web')->user()->cp){
-            $cp = $request->cp_envio;
-            $dato = Codigopostale::where('cp', $cp )->first();
-            $prov = $dato->provincia;
-            $loc = $dato->localidad;
-        } else {
-            $prov = '02';
-            $loc = '';
-        }
-        $contenido = file_get_contents('https://apis.datos.gob.ar/georef/api/localidades?provincia='.$prov.'&orden=nombre&max=1000');
-        $datos = json_decode($contenido, true);
-        $localidades = $datos['localidades'];
-        $datos = $request;
-        $informacion = Carritoinfo::find(1);
-        if(Auth::guard('web')->check()){
-            $user = Auth::guard('web')->user();
-        } else {
-            $user = null;
-        }
-        $credito = $this->generar_credito($datos);
-        return view('frontend/pedido', compact('datos', 'provincias', 'localidades', 'user', 'informacion', 'loc', 'credito'));
-    }
-
-    public function generar_credito(Request $request){
-        MercadoPagoConfig::setAccessToken($this->access_token);
-        $product1 = array(
-            "title" => "Productos",
-            "currency_id" => "ARS",
-            "quantity" => 1,
-            "unit_price" => floatval(Carrito::subtotal_final()) * (1 - (Carrito::find(1)->desc_mp / 100))
-        );
-        
-        
-        // Mount the array of products that will integrate the purchase amount
-        $items = array($product1);
-        
-        $paymentMethods = [
-            "excluded_payment_methods" => [],
-            "excluded_payment_types"=> array(
-                array(
-                    "id" => "ticket"
-                ),
-                array(
-                  "id" => "debit_card"  
-                ),
-            ),
-            "installments" => 12,
-            "default_installments" => 1
-        ];
-        
-        $backUrls = array(
-            'success' => route('registrar.pedido'),
-            'failure' => ""
-        );
-        
-        $costo_envio = (int) $request->costo_envio;
-        if($request->tipo_envio == 'Envíos CABA y GBA'){
-            $shipment = array(
-                "cost" => $costo_envio,
-                "mode" => "not_specified",
-            );
-            
-        } else{
-            $shipment = array();
-        }
-        
-        
-        $request = [
-            "items" => $items,
-            "payment_methods" => $paymentMethods,
-            "back_urls" => $backUrls,
-            "statement_descriptor" => "NAME_DISPLAYED_IN_USER_BILLING",
-            "external_reference" => "1234567890",
-            "expires" => false,
-            "auto_return" => 'approved',
-            "shipments" => $shipment,
-        ];
-        
-        $client = new PreferenceClient();
-        
-        $preference = $client->create($request);
-        return $preference;
-    }
-    public function calcularEnvio(Request $request)
+    
+    public function processOrder(Request $request)
     {
-        // Validar que se haya ingresado un código postal
-        $request->validate([
-             'codigo_postal' => 'required|exists:codigos_postales,cp'
-         ]);
 
-        // Buscar la zona asociada al código postal
-        $codigoPostal = Codigopostale::where('cp', $request->codigo_postal)->first();
-        if ($codigoPostal) {
+  
+        MercadoPagoConfig::setRuntimeEnviroment(MercadoPagoConfig::LOCAL); // Para local
+        $validated = $request->validate([
+            'envio' => 'nullable|string',
+            'codigo_postal' => 'nullable|string|max:10',
+        ]);
+        $logo = Logo::first();
+        $redes = Rede::first();
+        $contacto = Contacto::first(); // Si sólo hay un contacto, puedes usar first()
+        $cartItems = Cart::content();
+        $cartSubotal = $this->cartSubtotal();
+        $cartTotal = $this->cartTotal();
+        $carritoinfo =Carritoinfo::first();
+           // Get the updated cart count
+           $cartCount = Cart::content()->count();
+        // Guardar los datos validados en una variable
+        $datos = $validated;
+
+        try {
+
+            MercadoPagoConfig::setAccessToken(env('MP_ACCESS_TOKEN'));
+            $items = [
+                [
+                    "id" => "1234", // ID único del producto
+                    "title" => "Nombre del producto", // Nombre del producto
+                    "description" => "Descripción del producto", // Descripción del producto
+                    "quantity" => 1, // Cantidad
+                    "unit_price" => 100.00, // Precio unitario
+                    "currency_id" => "ARS" // Moneda (ejemplo: ARS para pesos argentinos)
+                ]
+            ];
             
-            $zona = $codigoPostal->zona;
-            // Encuentra el costo de la zona
-            $zonaPostal = Zonapostale::where('nombre', $zona)->first();
-            $costo = $zonaPostal->costo;
-            //dd($costo);
-
-            // Devolver el costo como respuesta
-            return response()->json(['costo' => $costo], 200);
+            // Crear la solicitud
+            $request = [
+                "items" => $items,
+                "payer" => [
+                    "email" => "user@test.com"
+                ],
+                "back_urls" => [
+                 'success' => route('payment.success'),
+                'failure' => route('payment.failure'),
+                 'pending' => route('payment.pending'),
+                ],
+                "auto_return" => "approved"
+            ];
+            // Realizar la solicitud
+            $client = new PreferenceClient();
+            $payment = $client->create($request);
+        
+            // Mostrar el ID del pago
+            print_r($payment);
+        
+        } catch (MPApiException $e) {
+            // Obtener detalles de la respuesta de la API
+            echo "Código de estado: " . $e->getApiResponse()->getStatusCode() . "\n";
+            echo "Contenido de la respuesta: " . json_encode($e->getApiResponse()->getContent()) . "\n";
+        } catch (\Exception $e) {
+            // Manejar otras excepciones
+            echo $e->getMessage();
         }
 
-        return response()->json(['error' => 'Código postal no encontrado'], 404);
+
+
+        // try {
+        //     // Configurar Mercado Pago
+        //     MercadoPagoConfig::setAccessToken(env('MP_ACCESS_TOKEN'));
+    
+        //     // Crear los ítems para la preferencia
+        //     $items = [];
+        //     foreach ($cartItems as $cartItem) {
+        //         $product = [
+        //             "title" => $cartItem->name,
+        //             "currency_id" => "ARS",
+        //             "quantity" => $cartItem->qty,
+        //             "unit_price" => (float)$cartItem->price
+        //         ];
+        //         $items[] = $product;
+        //     }
+    
+        //     // Configurar métodos de pago y URL de retorno
+        //     $paymentMethods = [
+        //         "excluded_payment_methods" => [],
+        //         "excluded_payment_types" => [
+        //             ["id" => "ticket"],
+        //             ["id" => "debit_card"],
+        //         ],
+        //         "installments" => 12,
+        //         "default_installments" => 1
+        //     ];
+    
+        //     $backUrls = [
+        //         'success' => route('payment.success'),
+        //         'failure' => route('payment.failure'),
+        //         'pending' => route('payment.pending'),
+        //     ];
+    
+        //     // Crear la solicitud de preferencia
+        //     $request_data = [
+        //         "items" => $items,
+        //         "payment_methods" => $paymentMethods,
+        //         "back_urls" => $backUrls,
+        //         "statement_descriptor" => "NAME_DISPLAYED_IN_USER_BILLING",
+        //         "external_reference" => uniqid(), // Asigna un ID único para la referencia externa
+        //         "expires" => false,
+        //         "auto_return" => 'approved'
+        //     ];
+    
+        //     // Crear cliente de preferencia y generar la preferencia
+        //     $client = new PreferenceClient();
+        //     $preference = $client->create($request_data);
+    
+        //     // Redirigir al checkout de Mercado Pago
+        //     return redirect($preference->init_point);
+    
+        // } catch (\Exception $e) {
+        //     // Mostrar detalles del error
+        //     echo 'Error: ' . $e->getMessage();
+    
+        //     // Registrar la respuesta completa de la API para verificar los detalles
+        //     Log::error('Error en Mercado Pago: ', [
+        //         'error' => $e->getMessage(),
+        //         'request_data' => $request_data, // Datos enviados en la solicitud
+        //     ]);
+        // }
+
+    // Pasar la variable a la vista
+    return view('page.cart-consumidor.details-consumidor', compact('datos', 'cartItems','redes', 'contacto', 'logo', 'cartSubotal', 'cartTotal', 'carritoinfo','cartCount'));
     }
+
+
+    public function success(Request $request)
+    {
+        // Lógica para manejar un pago exitoso
+        return view('page.payments.success'); // Asegúrate de crear la vista payments/success.blade.php
+    }
+
+    public function failure(Request $request)
+    {
+        // Lógica para manejar un pago fallido
+        return view('page.payments.failure'); // Asegúrate de crear la vista payments/failure.blade.php
+    }
+
+    public function pending(Request $request)
+    {
+        // Lógica para manejar un pago pendiente
+        return view('page.payments.pending'); // Asegúrate de crear la vista payments/pending.blade.php
+    }
+
+public function processCheckout2(Request $request)
+    {
+         // Valida los datos del formulario
+    $validated = $request->validate([
+        'nombreApellido' => 'nullable|string|max:255',
+        'dniCuit' => 'nullable|string|max:20',
+        'email' => 'nullable|email|max:255',
+        'celular' => 'nullable|string|max:20',
+        'direccion' => 'nullable|string|max:255',
+        'localidad' => 'nullable|string|max:255',
+        'provincia' => 'nullable|string|max:255',
+        'codigoPostal' => 'nullable|string|max:10',
+        'texto' => 'nullable|string',
+        'metododepago' => 'nullable|string',
+        'envio' => 'nullable',
+    ]);
+
+    try {
+        // Procesa la compra y guarda la información en la base de datos
+        $order = new Orderconsumidor();
+        $order->nombre_apellido = $validated['nombreApellido'];
+        $order->dni_cuit = $validated['dniCuit'];
+        $order->email = $validated['email'];
+        $order->celular = $validated['celular'];
+        $order->direccion = $validated['direccion'];
+        $order->localidad = $validated['localidad'];
+        $order->provincia = $validated['provincia'];
+        $order->codigo_postal = $validated['codigoPostal'];
+        $order->texto_adicional = $validated['texto'];
+        $order->metodo_pago = $validated['metododepago'];
+        $order->envio = $validated['envio'];
+
+        // Calcula el subtotal, descuento y total
+        $subtotal = Cart::subtotal(2, '.', '');
+        $discount = 0;
+
+        // Aplica el descuento según el método de pago
+        switch ($validated['metododepago']) {
+            case 'transferencia':
+                $discount = $subtotal * 0.05; // 5% de descuento
+                break;
+            case 'efectivo':
+                $discount = $subtotal * 0.10; // 10% de descuento
+                break;
+            default:
+                $discount = 0;
+        }
+
+        // Calcular el total después del descuento
+        $total = $subtotal - $discount;
+
+        // Guardar los valores en el modelo Orderconsumidor
+        $order->subtotal = $subtotal;
+        $order->descuento = $discount;
+        $order->total = $total;
+
+        // Convierte los items del carrito en JSON y guárdalos
+        $cartItems = Cart::content();
+        $order->cart_items = json_encode($cartItems);
+
+        // Guardar el pedido en la base de datos antes del pago
+        $order->save();
+
+        // Si el método de pago es "crédito", usa Mercado Pago
+        if ($validated['metododepago'] === 'credito') {
+        
+        }
+
+        // Si no es crédito, limpia el carrito y procesa el pedido
+        Cart::clear();
+
+        return redirect()->back()->with('success', 'Compra realizada con éxito.');
+    } catch (\Exception $e) {
+        // Registrar el error
+        Log::error('Error al procesar la compra: ' . $e->getMessage());
+
+        // Redirigir con un mensaje de error
+        return redirect()->back()->with('error', 'Hubo un error al procesar su compra. Inténtelo de nuevo.');
+    }
+    }
+    
+    // private $access_token = "APP_USR-718838766436740-060309-eb7974cf39ee66d95053449994254c83-621563634";
+    // private $public_key = "APP_USR-0a769e86-ff65-4388-991f-e4038f5679c7";
+
+
+
+    // public function pedido(Request $request){
+    //     $contenido = file_get_contents('https://apis.datos.gob.ar/georef/api/provincias?orden=nombre');
+    //     $datos = json_decode($contenido, true);
+    //     $provincias = $datos['provincias'];
+    //     if(Auth::guard('web')->check() && $request->cp_envio != Auth::guard('web')->user()->cp){
+    //         $cp = $request->cp_envio;
+    //         $dato = Codigopostale::where('cp', $cp )->first();
+    //         $prov = $dato->provincia;
+    //         $loc = $dato->localidad;
+    //     } else {
+    //         $prov = '02';
+    //         $loc = '';
+    //     }
+    //     $contenido = file_get_contents('https://apis.datos.gob.ar/georef/api/localidades?provincia='.$prov.'&orden=nombre&max=1000');
+    //     $datos = json_decode($contenido, true);
+    //     $localidades = $datos['localidades'];
+    //     $datos = $request;
+    //     $informacion = Carritoinfo::find(1);
+    //     if(Auth::guard('web')->check()){
+    //         $user = Auth::guard('web')->user();
+    //     } else {
+    //         $user = null;
+    //     }
+    //     $credito = $this->generar_credito($datos);
+    //     return view('frontend/pedido', compact('datos', 'provincias', 'localidades', 'user', 'informacion', 'loc', 'credito'));
+    // }
+
+    // public function generar_credito(Request $request){
+    //     MercadoPagoConfig::setAccessToken($this->access_token);
+    //     $product1 = array(
+    //         "title" => "Productos",
+    //         "currency_id" => "ARS",
+    //         "quantity" => 1,
+    //         "unit_price" => floatval(Carrito::subtotal_final()) * (1 - (Carrito::find(1)->desc_mp / 100))
+    //     );
+        
+        
+    //     // Mount the array of products that will integrate the purchase amount
+    //     $items = array($product1);
+        
+    //     $paymentMethods = [
+    //         "excluded_payment_methods" => [],
+    //         "excluded_payment_types"=> array(
+    //             array(
+    //                 "id" => "ticket"
+    //             ),
+    //             array(
+    //               "id" => "debit_card"  
+    //             ),
+    //         ),
+    //         "installments" => 12,
+    //         "default_installments" => 1
+    //     ];
+        
+    //     $backUrls = array(
+    //         'success' => route('registrar.pedido'),
+    //         'failure' => ""
+    //     );
+        
+    //     $costo_envio = (int) $request->costo_envio;
+    //     if($request->tipo_envio == 'Envíos CABA y GBA'){
+    //         $shipment = array(
+    //             "cost" => $costo_envio,
+    //             "mode" => "not_specified",
+    //         );
+            
+    //     } else{
+    //         $shipment = array();
+    //     }
+        
+        
+    //     $request = [
+    //         "items" => $items,
+    //         "payment_methods" => $paymentMethods,
+    //         "back_urls" => $backUrls,
+    //         "statement_descriptor" => "NAME_DISPLAYED_IN_USER_BILLING",
+    //         "external_reference" => "1234567890",
+    //         "expires" => false,
+    //         "auto_return" => 'approved',
+    //         "shipments" => $shipment,
+    //     ];
+        
+    //     $client = new PreferenceClient();
+        
+    //     $preference = $client->create($request);
+    //     return $preference;
+    // }
+
+    // public function calcularEnvio(Request $request)
+    // {
+    //     // Validar que se haya ingresado un código postal
+    //     $request->validate([
+    //          'codigo_postal' => 'required|exists:codigos_postales,cp'
+    //      ]);
+
+    //     // Buscar la zona asociada al código postal
+    //     $codigoPostal = Codigopostale::where('cp', $request->codigo_postal)->first();
+    //     if ($codigoPostal) {
+            
+    //         $zona = $codigoPostal->zona;
+    //         // Encuentra el costo de la zona
+    //         $zonaPostal = Zonapostale::where('nombre', $zona)->first();
+    //         $costo = $zonaPostal->costo;
+    //         //dd($costo);
+
+    //         // Devolver el costo como respuesta
+    //         return response()->json(['costo' => $costo], 200);
+    //     }
+
+    //     return response()->json(['error' => 'Código postal no encontrado'], 404);
+    // }
 
 
     public function cartdetailsconsumidor()
@@ -399,110 +634,8 @@ class CartController extends Controller
     }
 
 
-    public function processOrder(Request $request)
-    {
-
-        $validated = $request->validate([
-            'envio' => 'nullable|string',
-            'codigo_postal' => 'nullable|string|max:10',
-        ]);
-        $logo = Logo::first();
-        $redes = Rede::first();
-        $contacto = Contacto::first(); // Si sólo hay un contacto, puedes usar first()
-        $cartItems = Cart::content();
-        $cartSubotal = $this->cartSubtotal();
-        $cartTotal = $this->cartTotal();
-        $carritoinfo =Carritoinfo::first();
-           // Get the updated cart count
-           $cartCount = Cart::content()->count();
-        // Guardar los datos validados en una variable
-        $datos = $validated;
-
-    // Pasar la variable a la vista
-    return view('page.cart-consumidor.details-consumidor', compact('datos', 'cartItems','redes', 'contacto', 'logo', 'cartSubotal', 'cartTotal', 'carritoinfo','cartCount'));
-    }
     
 
-
-public function processCheckout2(Request $request)
-{
-
-    // Valida los datos del formulario
-    $validated = $request->validate([
-        'nombreApellido' => 'nullable|string|max:255',
-        'dniCuit' => 'nullable|string|max:20',
-        'email' => 'nullable|email|max:255',
-        'celular' => 'nullable|string|max:20',
-        'direccion' => 'nullable|string|max:255',
-        'localidad' => 'nullable|string|max:255',
-        'provincia' => 'nullable|string|max:255',
-        'codigoPostal' => 'nullable|string|max:10',
-        'texto' => 'nullable|string',
-        'metododepago' => 'nullable|string',
-        'envio' => 'nullable',
-    ]);
-    // dd($validated);
-
-    try {
-        // Procesa la compra, guardando la información en la base de datos
-        $order = new Orderconsumidor();
-        $order->nombre_apellido = $validated['nombreApellido'];
-        $order->dni_cuit = $validated['dniCuit'];
-        $order->email = $validated['email'];
-        $order->celular = $validated['celular'];
-        $order->direccion = $validated['direccion'];
-        $order->localidad = $validated['localidad'];
-        $order->provincia = $validated['provincia'];
-        $order->codigo_postal = $validated['codigoPostal'];
-        $order->texto_adicional = $validated['texto'];
-        $order->metodo_pago = $validated['metododepago'];
-        $order->envio = $validated['envio'];
-
-        // Calcula el subtotal, descuento y total
-        $subtotal = Cart::subtotal(2, '.', ''); // Subtotal del carrito
-        $discount = 0; // Inicialmente sin descuento
-
-        // Aplica el descuento según el método de pago
-        switch ($validated['metododepago']) {
-            case 'transferencia':
-                $discount = $subtotal * 0.05; // 5% de descuento
-                break;
-            case 'efectivo':
-                $discount = $subtotal * 0.10; // 10% de descuento
-                break;
-            default:
-                $discount = 0;
-        }
-
-        // Calcular el total después del descuento
-        $total = $subtotal - $discount;
-
-        // Guardar los valores en el modelo Orderconsumidor
-        $order->subtotal = $subtotal;
-        $order->descuento = $discount;
-        $order->total = $total;
-
-        // Convierte los items del carrito en JSON y guárdalos
-        $cartItems = Cart::content(); // Obtén los productos del carrito
-        $order->cart_items = json_encode($cartItems); // Guarda los items en formato JSON
-        
-       dd($order);
-        // Guardar el pedido
-        $order->save();
-
-        // Limpiar el carrito después del procesamiento
-        Cart::clear();
-
-        // Redirigir con un mensaje de éxito
-        return redirect()->back()->with('success', 'Compra realizada con éxito.');
-    } catch (\Exception $e) {
-        // Registrar el error
-        Log::error('Error al procesar la compra: ' . $e->getMessage());
-
-        // Redirigir con un mensaje de error
-        return redirect()->back()->with('error', 'Hubo un error al procesar su compra. Inténtelo de nuevo.');
-    }
-}
 
 
 

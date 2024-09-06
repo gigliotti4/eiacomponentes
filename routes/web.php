@@ -31,7 +31,10 @@ Route::post('/calcular-envio', [App\Http\Controllers\CartController::class, 'cal
 
 Route::get('/order/process', [App\Http\Controllers\CartController::class, 'processOrder'])->name('processOrder');
 Route::post('/check/process', [App\Http\Controllers\CartController::class, 'processCheckout2'])->name('processCheckout2');
-
+// Rutas para el proceso de pago con Mercado Pago
+Route::get('/payment/success', [App\Http\Controllers\CartController::class, 'success'])->name('payment.success');
+Route::get('/payment/failure', [App\Http\Controllers\CartController::class, 'failure'])->name('payment.failure');
+Route::get('/payment/pending', [App\Http\Controllers\CartController::class, 'pending'])->name('payment.pending');
 
 Route::middleware(['logincliente'])->group(function () {
     Route::get('/cart-index', [App\Http\Controllers\CartController::class, 'indexcomerciante'])->name('cart.index');

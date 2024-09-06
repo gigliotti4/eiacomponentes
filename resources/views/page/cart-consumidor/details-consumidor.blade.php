@@ -77,7 +77,7 @@
                             <span>x {{ $item->qty }}</span>
                         </div>
                     @endforeach
-                    <div class="cart__numero text-right mt-2" id="subtotal">${{ $cartSubotal }}</div>
+                    <div class="cart__numero text-right mt-2" id="subtotal">${{ @$cartSubotal }}</div>
                     <hr>
                     <h4 class="card-title">Envio</h4>
                     {{ $datos['envio'] }}
