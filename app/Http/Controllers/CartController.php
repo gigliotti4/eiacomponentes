@@ -19,6 +19,9 @@ use Exception;
 use MercadoPago\MercadoPagoConfig;
 use MercadoPago\Client\Preference\PreferenceClient;
 use MercadoPago\Exceptions\MPApiException;
+use App\Mail\Carritopedido;
+use App\Mail\CarritoPresupuesto;
+use Illuminate\Support\Facades\Mail;
 
 class CartController extends Controller
 {
@@ -48,8 +51,6 @@ class CartController extends Controller
         try {
 
             MercadoPagoConfig::setAccessToken(env('MP_ACCESS_TOKEN'));
-     
-        
             // Construir el array de items a partir de los productos del carrito
             $items = [];
             foreach ($cartItems as $cartItem) {
@@ -62,7 +63,7 @@ class CartController extends Controller
                     "currency_id" => "ARS" // Moneda (ejemplo: ARS para pesos argentinos)
                 ];
             }
-
+          
             $paymentMethods = [
                 "excluded_payment_methods" => [],
                 "excluded_payment_types"=> array(
@@ -96,8 +97,6 @@ class CartController extends Controller
                 "site_id" => "MLA"
             ];
         
-
-
             // Realizar la solicitud
             $client = new PreferenceClient();
             $payment = $client->create($request);
@@ -121,12 +120,17 @@ class CartController extends Controller
     }
 
 
+
     public function success(Request $request)
     {
         // Lógica para manejar un pago exitoso
-        return view('page.payments.success'); // Asegúrate de crear la vista payments/success.blade.php
+        $logo = Logo::first();
+        $redes = Rede::first();
+        $contacto = Contacto::first(); // Si sólo hay un contacto, puedes usar first()
+        $cartCount = Cart::content()->count();
+        
+        return view('page.payments.success', compact('logo', 'redes', 'contacto', 'cartCount')); // Asegúrate de crear la vista payments/success.blade.php
     }
-
     public function failure(Request $request)
     {
         // Lógica para manejar un pago fallido
@@ -145,22 +149,21 @@ public function processCheckout2(Request $request)
      
          // Valida los datos del formulario
     $validated = $request->validate([
-        'nombreApellido' => 'nullable|string|max:255',
-        'dniCuit' => 'nullable|string|max:20',
-        'email' => 'nullable|email|max:255',
-        'celular' => 'nullable|string|max:20',
-        'direccion' => 'nullable|string|max:255',
-        'localidad' => 'nullable|string|max:255',
-        'provincia' => 'nullable|string|max:255',
-        'codigoPostal' => 'nullable|string|max:10',
-        'texto' => 'nullable|string',
-        'metododepago' => 'nullable|string',
-        'envio' => 'nullable',
+        'nombreApellido' => 'required|string|max:255',
+        'dniCuit' => 'required|string|max:20',
+        'email' => 'required|email|max:255',
+        'celular' => 'required|string|max:20',
+        'direccion' => 'required|string|max:255',
+        'localidad' => 'required|string|max:255',
+        'provincia' => 'required|string|max:255',
+        'codigoPostal' => 'required|string|max:10',
+        'texto' => 'required|string',
+        'metododepago' => 'required|string',
+        'envio' => 'required',
     ]);
 
-    dd($validated);
+  
     try {
-        // Procesa la compra y guarda la información en la base de datos
         $order = new Orderconsumidor();
         $order->nombre_apellido = $validated['nombreApellido'];
         $order->dni_cuit = $validated['dniCuit'];
@@ -201,16 +204,12 @@ public function processCheckout2(Request $request)
         // Convierte los items del carrito en JSON y guárdalos
         $cartItems = Cart::content();
         $order->cart_items = json_encode($cartItems);
-
+    //  dd($order);
         // Guardar el pedido en la base de datos antes del pago
         $order->save();
-
-        // Si el método de pago es "crédito", usa Mercado Pago
-        if ($validated['metododepago'] === 'credito') {
-           
-            
-
-        }
+      //  dd($order);
+      // Enviar el correo al cliente con los detalles del pedido
+      Mail::to($order->email)->send(new Carritopedido($order));
 
         // Si no es crédito, limpia el carrito y procesa el pedido
       //  Cart::clear();
@@ -221,7 +220,7 @@ public function processCheckout2(Request $request)
         Log::error('Error al procesar la compra: ' . $e->getMessage());
 
         // Redirigir con un mensaje de error
-        return redirect()->back()->with('error', 'Hubo un error al procesar su compra. Inténtelo de nuevo.');
+        return redirect()->back()->with('danger', 'Hubo un error al procesar su compra. Inténtelo de nuevo.');
     }
     }
     
@@ -601,9 +600,21 @@ public function processCheckout2(Request $request)
             return response()->json(['error' => 'Hubo un error al agregar el producto al carrito.'], 500);
         }
     }
-
-
+    public function sendcomerciante(Request $request)
+    { 
+        
+        $cartItems = Cart::content(); // Obtener los artículos del carrito
+        $carritoinfo = ''; // Obtén la información relevante del carrito
+        $role = Auth::guard('logincliente')->user()->role;
+        $cliente = Auth::guard('logincliente')->user(); // Datos del cliente
+        dd($cliente);
+        // Envía el correo
+        Mail::to($cliente->email)->send(new CarritoPresupuesto($cartItems, $carritoinfo, $role, $cliente));
     
+        return back()->with('success', '¡Correo enviado con éxito!');
+        
+
+    }
 
 
 

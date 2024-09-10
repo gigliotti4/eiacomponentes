@@ -42,6 +42,7 @@ Route::middleware(['logincliente'])->group(function () {
     Route::get('/cart-details', [App\Http\Controllers\CartController::class, 'detailscomerciante'])->name('cart.details');
     Route::post('/cart/update', [App\Http\Controllers\CartController::class, 'update'])->name('cart.update');
     Route::post('/cart/remove', [App\Http\Controllers\CartController::class, 'remove'])->name('cart.remove');
+    Route::post('/presupuesto/pedir', [App\Http\Controllers\CartController::class, 'sendcomerciante'])->name('presupuesto.pedir');
 });
 
 

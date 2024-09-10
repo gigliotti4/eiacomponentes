@@ -29,7 +29,7 @@
             @if ($productos->isEmpty())
                 <p>No hay productos disponibles.</p>
             @else
-                <table class="table table-striped">
+                <table class="table ">
                     <thead>
                         <tr>
                             <th scope="col">Imagen</th>

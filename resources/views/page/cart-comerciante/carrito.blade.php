@@ -120,7 +120,8 @@
     </div>
 </div>
         @endif
-
+        <form action="{{ route('presupuesto.pedir') }}" method="POST">
+            @csrf
 <div class="container my-5">
 
     <div class="row">
@@ -139,6 +140,7 @@
                             </thead>
                             <tbody>
                                 @foreach ($cartItems as $item)
+                                
                                 <tr>
                                     <td><img src="{{ $item->options->imagen }}" alt="{{ $item->name }}" style="width: 50px;"></td>
                                     <td>
@@ -166,7 +168,7 @@
             
             <div class="d-flex justify-content-between">
                 <a href="{{route('cart.index')}}" class="btn btn__white mt-3">< Seguir comprando</a>   
-                <a href="{{route('categorias')}}" class="btn btn__rojo mt-3">Pedir presupuesto</a>   
+                <button type="submit" class="btn btn__rojo mt-3">Pedir presupuesto</button>   
                 
             </div>
         </div>
@@ -174,6 +176,7 @@
         
     </div>
 </div>
+</form>
 
 @endsection
 @push('scripts')

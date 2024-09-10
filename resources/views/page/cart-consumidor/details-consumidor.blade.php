@@ -2,15 +2,18 @@
 @section('title', 'Detalle Carrito')
 
 @section('content')
-@foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                    @endforeach
+
 
                     @if(session()->has('success'))
                     <div class="alert alert-success">
                         {{ session()->get('success') }}
                     </div>
                 @endif
+                @if(session()->has('danger'))
+                <div class="alert alert-danger">
+                    {{ session()->get('danger') }}
+                </div>
+            @endif
 <form action="{{ route('processCheckout2') }}" method="POST"> <!-- Asegúrate de tener la ruta correcta -->
     @csrf
 <div class="container my-5">
@@ -110,10 +113,10 @@
                         <h4>Total:</h4>
                         <span id="totalDisplay">${{ $cartTotal }}</span>
                     </div>
-                    <div class="wallet_container" id="wallet_container" style="display: none;"></div>
+                    <div class="wallet_container" id="wallet_container" disabled style="display: none;"></div>
                   
-                    <button type="submit" id="button-transferencia" class="btn btn__rojo w-100" style="display: none;">Realizar transferencia</button>
-                    <button type="submit" id="button-efectivo" class="btn btn__rojo w-100" style="display: none;">Pagar en efectivo</button>
+                    <button type="submit" id="button-transferencia"  class="btn btn__rojo w-100" style="display: none;">Realizar transferencia</button>
+                    <button type="submit" id="button-efectivo"  class="btn btn__rojo w-100" style="display: none;">Pagar en efectivo</button>
                 </div>
             </div>
         </div>
@@ -130,8 +133,16 @@
 const mp = new MercadoPago('{{ env('MP_PUBLIC_KEY') }}', { locale: 'es-AR' });
 
 mp.bricks().create("wallet", "wallet_container", {
-    initialization: { preferenceId: "{{ $payment->id }}" }
+    initialization: { preferenceId: "{{ $payment->id }}" },
+    customization: {
+      visual: {
+          buttonBackground: 'black',
+          borderRadius: '16px',
+      },
+      
+ },
 });
+
 
 // Obtener referencias de elementos
 const paymentMethods = document.getElementsByName('metododepago');
