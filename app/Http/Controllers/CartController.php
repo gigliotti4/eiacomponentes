@@ -44,40 +44,67 @@ class CartController extends Controller
            $cartCount = Cart::content()->count();
         // Guardar los datos validados en una variable
         $datos = $validated;
-
+        
         try {
 
             MercadoPagoConfig::setAccessToken(env('MP_ACCESS_TOKEN'));
-            $items = [
-                [
-                    "id" => "1234", // ID único del producto
-                    "title" => "Nombre del producto", // Nombre del producto
-                    "description" => "Descripción del producto", // Descripción del producto
-                    "quantity" => 1, // Cantidad
-                    "unit_price" => 100.00, // Precio unitario
+     
+        
+            // Construir el array de items a partir de los productos del carrito
+            $items = [];
+            foreach ($cartItems as $cartItem) {
+                $items[] = [
+                    "id" => $cartItem->id, // ID único del producto
+                    "title" => $cartItem->name, // Nombre del producto
+                    "description" => $cartItem->options->colores ?? 'Sin color', // Descripción del producto
+                    "quantity" => (int)$cartItem->qty, // Cantidad
+                    "unit_price" => (float)$cartItem->price, // Precio unitario
                     "currency_id" => "ARS" // Moneda (ejemplo: ARS para pesos argentinos)
-                ]
-            ];
-            
+                ];
+            }
+
+            $paymentMethods = [
+                "excluded_payment_methods" => [],
+                "excluded_payment_types"=> array(
+                    array(
+                        "id" => "ticket"
+                    ),
+                    array(
+                      "id" => "debit_card"  
+                    ),
+                ),
+                "installments" => 12,
+                "default_installments" => 1
+                ];
+
             // Crear la solicitud
             $request = [
                 "items" => $items,
-                "payer" => [
-                    "email" => "user@test.com"
-                ],
+                "payment_methods" => $paymentMethods,
+                "statement_descriptor" => "NAME_DISPLAYED_IN_USER_BILLING",
+                "external_reference" => "1234567890",
+                // "payer" => [
+                //     "email" => "user@test.com"
+                // ],
                 "back_urls" => [
-                 'success' => route('payment.success'),
-                'failure' => route('payment.failure'),
-                 'pending' => route('payment.pending'),
+                    'success' => route('payment.success'),
+                    'failure' => route('payment.failure'),
+                    'pending' => route('payment.pending'),
                 ],
-                "auto_return" => "approved"
+                "expires" => false,
+                "auto_return" => "approved",
+                "site_id" => "MLA"
             ];
+        
+
+
             // Realizar la solicitud
             $client = new PreferenceClient();
             $payment = $client->create($request);
-        
+               // Asegurar que el site_id esté configurado correctamente
+           
             // Mostrar el ID del pago
-            print_r($payment);
+          // dd($payment);
         
         } catch (MPApiException $e) {
             // Obtener detalles de la respuesta de la API
@@ -89,71 +116,8 @@ class CartController extends Controller
         }
 
 
-
-        // try {
-        //     // Configurar Mercado Pago
-        //     MercadoPagoConfig::setAccessToken(env('MP_ACCESS_TOKEN'));
-    
-        //     // Crear los ítems para la preferencia
-        //     $items = [];
-        //     foreach ($cartItems as $cartItem) {
-        //         $product = [
-        //             "title" => $cartItem->name,
-        //             "currency_id" => "ARS",
-        //             "quantity" => $cartItem->qty,
-        //             "unit_price" => (float)$cartItem->price
-        //         ];
-        //         $items[] = $product;
-        //     }
-    
-        //     // Configurar métodos de pago y URL de retorno
-        //     $paymentMethods = [
-        //         "excluded_payment_methods" => [],
-        //         "excluded_payment_types" => [
-        //             ["id" => "ticket"],
-        //             ["id" => "debit_card"],
-        //         ],
-        //         "installments" => 12,
-        //         "default_installments" => 1
-        //     ];
-    
-        //     $backUrls = [
-        //         'success' => route('payment.success'),
-        //         'failure' => route('payment.failure'),
-        //         'pending' => route('payment.pending'),
-        //     ];
-    
-        //     // Crear la solicitud de preferencia
-        //     $request_data = [
-        //         "items" => $items,
-        //         "payment_methods" => $paymentMethods,
-        //         "back_urls" => $backUrls,
-        //         "statement_descriptor" => "NAME_DISPLAYED_IN_USER_BILLING",
-        //         "external_reference" => uniqid(), // Asigna un ID único para la referencia externa
-        //         "expires" => false,
-        //         "auto_return" => 'approved'
-        //     ];
-    
-        //     // Crear cliente de preferencia y generar la preferencia
-        //     $client = new PreferenceClient();
-        //     $preference = $client->create($request_data);
-    
-        //     // Redirigir al checkout de Mercado Pago
-        //     return redirect($preference->init_point);
-    
-        // } catch (\Exception $e) {
-        //     // Mostrar detalles del error
-        //     echo 'Error: ' . $e->getMessage();
-    
-        //     // Registrar la respuesta completa de la API para verificar los detalles
-        //     Log::error('Error en Mercado Pago: ', [
-        //         'error' => $e->getMessage(),
-        //         'request_data' => $request_data, // Datos enviados en la solicitud
-        //     ]);
-        // }
-
     // Pasar la variable a la vista
-    return view('page.cart-consumidor.details-consumidor', compact('datos', 'cartItems','redes', 'contacto', 'logo', 'cartSubotal', 'cartTotal', 'carritoinfo','cartCount'));
+    return view('page.cart-consumidor.details-consumidor', compact('datos', 'cartItems','redes', 'contacto', 'logo', 'cartSubotal', 'cartTotal', 'carritoinfo','cartCount', 'payment'));
     }
 
 
@@ -177,6 +141,8 @@ class CartController extends Controller
 
 public function processCheckout2(Request $request)
     {
+
+     
          // Valida los datos del formulario
     $validated = $request->validate([
         'nombreApellido' => 'nullable|string|max:255',
@@ -192,6 +158,7 @@ public function processCheckout2(Request $request)
         'envio' => 'nullable',
     ]);
 
+    dd($validated);
     try {
         // Procesa la compra y guarda la información en la base de datos
         $order = new Orderconsumidor();
@@ -240,11 +207,13 @@ public function processCheckout2(Request $request)
 
         // Si el método de pago es "crédito", usa Mercado Pago
         if ($validated['metododepago'] === 'credito') {
-        
+           
+            
+
         }
 
         // Si no es crédito, limpia el carrito y procesa el pedido
-        Cart::clear();
+      //  Cart::clear();
 
         return redirect()->back()->with('success', 'Compra realizada con éxito.');
     } catch (\Exception $e) {
