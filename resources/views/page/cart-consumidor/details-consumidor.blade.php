@@ -14,6 +14,7 @@
                     {{ session()->get('danger') }}
                 </div>
             @endif
+
 <form action="{{ route('processCheckout2') }}" method="POST"> <!-- Asegúrate de tener la ruta correcta -->
     @csrf
 <div class="container my-5">
@@ -80,7 +81,9 @@
                             <span>x {{ $item->qty }}</span>
                         </div>
                     @endforeach
-                    <div class="cart__numero text-right mt-2" id="subtotal">${{ @$cartSubotal }}</div>
+                 
+
+                    <div class="cart__numero text-right mt-2" id="subtotal">${{ @$cartSubtotal= number_format((float) $cartSubtotal, 2, ',', '.'); }}</div>
                     <hr>
                     <h4 class="card-title">Envio</h4>
                     {{ $datos['envio'] }}
@@ -110,8 +113,12 @@
                         <span id="discountDisplay">$0.00</span>
                     </div>
                     <div class="d-flex justify-content-between">
+                        <h4>Costo de Envio:</h4>
+                        <span id="costoEnvio">${{ $costoEnvio= number_format((float) $costoEnvio, 2, ',', '.'); }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between">
                         <h4>Total:</h4>
-                        <span id="totalDisplay">${{ $cartTotal }}</span>
+                        <span id="totalDisplay">${{ @$cartTotal= number_format((float) $cartTotal, 2, ',', '.'); }}</span>
                     </div>
                     <div class="wallet_container" id="wallet_container" disabled style="display: none;"></div>
                   
@@ -135,14 +142,12 @@ const mp = new MercadoPago('{{ env('MP_PUBLIC_KEY') }}', { locale: 'es-AR' });
 mp.bricks().create("wallet", "wallet_container", {
     initialization: { preferenceId: "{{ $payment->id }}" },
     customization: {
-      visual: {
-          buttonBackground: 'black',
-          borderRadius: '16px',
-      },
-      
- },
+        visual: {
+            buttonBackground: 'black',
+            borderRadius: '16px',
+        },
+    },
 });
-
 
 // Obtener referencias de elementos
 const paymentMethods = document.getElementsByName('metododepago');
@@ -153,6 +158,7 @@ const paymentInfoElements = document.querySelectorAll('.payment-info');
 const discountDisplay = document.getElementById('discountDisplay');
 const totalDisplay = document.getElementById('totalDisplay');
 const subtotalElement = document.getElementById('subtotal');
+const costoEnvioElement = document.getElementById('costoEnvio'); // Para obtener el costo de envío
 
 // Función para formatear moneda
 function formatCurrency(value) {
@@ -164,6 +170,9 @@ function updateTotal(selectedMethod) {
     // Obtener el subtotal y limpiarlo para convertirlo en número
     const subtotal = parseFloat(subtotalElement.textContent.replace('$', '').replace(/\./g, '').replace(',', '.'));
     
+    // Obtener el costo de envío, limpiarlo y convertirlo en número
+    const costoEnvio = parseFloat(costoEnvioElement.textContent.replace('$', '').replace(/\./g, '').replace(',', '.'));
+
     let discount = 0;
 
     // Aplicar descuento según método de pago
@@ -178,8 +187,8 @@ function updateTotal(selectedMethod) {
             discount = 0; // Sin descuento para tarjeta de crédito
     }
 
-    // Calcular el total
-    const total = subtotal - discount;
+    // Calcular el total considerando el costo de envío
+    const total = (subtotal + costoEnvio) - discount;
 
     // Mostrar el descuento y total formateados
     discountDisplay.textContent = formatCurrency(discount);
@@ -217,5 +226,6 @@ paymentMethods.forEach(paymentMethod => {
         updateTotal(selectedMethod);
     });
 });
+
 </script>
 @endpush

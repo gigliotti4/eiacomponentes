@@ -59,8 +59,9 @@ class PageController extends Controller
         $redes = Rede::first();
         $contacto = Contacto::first(); // Si sólo hay un contacto, puedes usar first()
        $sliders = Slider::where('seccion', 'inyecciones')->get();
+       $cartCount = Cart::content()->count();
         // Pasar los datos a la vista
-        return view('page.inyecciones', compact('inyecciones', 'redes', 'contacto', 'logo', 'sliders'));
+        return view('page.inyecciones', compact('inyecciones', 'redes', 'contacto', 'logo', 'sliders', 'cartCount'));
         
         }
     
@@ -104,6 +105,7 @@ class PageController extends Controller
         $empresa = Empresa::first();
         $redes = Rede::first();
         $contacto = Contacto::first(); // Si sólo hay un contacto, puedes usar first()
+        $cartCount = Cart::content()->count();
             // Obtiene todas las categorías de la base de datos
             $categorias = Categoria::all();
 
@@ -132,7 +134,7 @@ class PageController extends Controller
             $productos = $query->get();
 
             // Devuelve la vista 'productos.index' con las categorías, colores y productos obtenidos
-            return view('page.categorias', compact('categorias', 'colores', 'productos', 'redes', 'contacto', 'logo'));
+            return view('page.categorias', compact('categorias', 'colores', 'productos', 'redes', 'contacto', 'logo', 'cartCount'));
         }
    
 
@@ -141,8 +143,9 @@ class PageController extends Controller
         $logo = Logo::first();
         $redes = Rede::first();
         $contacto = Contacto::first(); // Si sólo hay un contacto, puedes usar first()
+        $cartCount = Cart::content()->count();
         // Pasar los datos a la vista
-        return view('page.contacto', compact('redes', 'contacto', 'logo'));
+        return view('page.contacto', compact('redes', 'contacto', 'logo', 'cartCount'));
     }
 
     public function presupuesto(){
@@ -150,9 +153,9 @@ class PageController extends Controller
         $logo = Logo::first();
         $redes = Rede::first();
         $contacto = Contacto::first(); // Si sólo hay un contacto, puedes usar first()
-    
+        $cartCount = Cart::content()->count();
         // Pasar los datos a la vista
-        return view('page.presupuesto', compact('redes', 'contacto', 'logo'));
+        return view('page.presupuesto', compact('redes', 'contacto', 'logo', 'cartCount'));
     }
 
     public function newsletter(Request $request)

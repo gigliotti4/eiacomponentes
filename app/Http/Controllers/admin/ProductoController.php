@@ -47,7 +47,7 @@ class ProductoController extends Controller
         if ($request->hasFile('imagen')) {
             $image = $request->file('imagen');
             $imageName = $image->getClientOriginalName();
-            $imagePath = $image->storeAs('productos', $imageName, 'public');
+            $imagePath = $image->storeAs('galeria', $imageName, 'public');
             $data['imagen'] = $imagePath;
         }
 
@@ -111,7 +111,7 @@ class ProductoController extends Controller
             $galeria = [];
             foreach ($request->file('galeria') as $image) {
                 $imageName = $image->getClientOriginalName();
-                $imagePath = $image->storeAs('productos', $imageName, 'public');
+                $imagePath = $image->storeAs('galeria', $imageName, 'public');
                 $galeria[] = $imagePath;
             }
             $data['galeria'] = json_encode($galeria);

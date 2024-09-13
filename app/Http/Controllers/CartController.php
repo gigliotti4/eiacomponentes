@@ -26,67 +26,111 @@ use Illuminate\Support\Facades\Mail;
 class CartController extends Controller
 {
 
-    
+
+    public function calcularEnvio(Request $request)
+    {
+        // Validar que se haya ingresado un código postal
+        $request->validate([
+             'codigo_postal' => 'required|exists:codigos_postales,cp'
+         ]);
+
+        // Buscar la zona asociada al código postal
+        $codigoPostal = Codigopostale::where('cp', $request->codigo_postal)->first();
+        if ($codigoPostal) {
+            
+            $zona = $codigoPostal->zona;
+            // Encuentra el costo de la zona
+            $zonaPostal = Zonapostale::where('nombre', $zona)->first();
+            $costo = $zonaPostal->costo;
+            //dd($costo);
+            //  $costo = number_format((float) $costo, 2, ',', '.');
+            // Devolver el costo como respuesta
+            return response()->json(['costo' => $costo], 200);
+        }
+
+        return response()->json(['error' => 'Código postal no encontrado'], 404);
+    }
+
+
     public function processOrder(Request $request)
     {
-
-  
         MercadoPagoConfig::setRuntimeEnviroment(MercadoPagoConfig::LOCAL); // Para local
+    
+        // Validar la entrada del formulario
         $validated = $request->validate([
             'envio' => 'nullable|string',
             'codigo_postal' => 'nullable|string|max:10',
+            'costo_envio' => 'nullable|numeric' // Validar el costo de envío
         ]);
+    
         $logo = Logo::first();
         $redes = Rede::first();
         $contacto = Contacto::first(); // Si sólo hay un contacto, puedes usar first()
         $cartItems = Cart::content();
-        $cartSubotal = $this->cartSubtotal();
-        $cartTotal = $this->cartTotal();
-        $carritoinfo =Carritoinfo::first();
-           // Get the updated cart count
-           $cartCount = Cart::content()->count();
+    
+     // Obtener el subtotal y asegurarse de que sea un número flotante (con decimales)
+        $cartSubtotal = $this->cartSubtotal();
+
+        // Obtener el costo de envío desde el request, asegurarse de que sea un número flotante
+        $costoEnvio = (float) $request->input('costo_envio', 0);
+       // dd($cartSubtotal, $costoEnvio);
+        // Sumar el costo de envío al total del carrito
+        $cartTotal =  $cartSubtotal +  $costoEnvio;
+     //   dd($cartTotal);
+        $carritoinfo = Carritoinfo::first();
+    
+        // Get the updated cart count
+        $cartCount = Cart::content()->count();
+    
         // Guardar los datos validados en una variable
         $datos = $validated;
-        
+    
         try {
-
+            // Configurar el token de MercadoPago
             MercadoPagoConfig::setAccessToken(env('MP_ACCESS_TOKEN'));
+    
             // Construir el array de items a partir de los productos del carrito
             $items = [];
             foreach ($cartItems as $cartItem) {
+                // Obtener el producto desde la base de datos
+                $producto = Producto::find($cartItem->id);
+    
+                // Calcular el precio basado en la cantidad comprada usando el método del modelo
+                $precioConDescuento = $producto->obtenerPrecioConDescuento($cartItem->qty);
+    
+                // Crear el array de items para MercadoPago con el precio ajustado
                 $items[] = [
                     "id" => $cartItem->id, // ID único del producto
                     "title" => $cartItem->name, // Nombre del producto
                     "description" => $cartItem->options->colores ?? 'Sin color', // Descripción del producto
-                    "quantity" => (int)$cartItem->qty, // Cantidad
-                    "unit_price" => (float)$cartItem->price, // Precio unitario
+                    "quantity" => (int) $cartItem->qty, // Cantidad
+                    "unit_price" => (float) $precioConDescuento, // Precio unitario con descuento
                     "currency_id" => "ARS" // Moneda (ejemplo: ARS para pesos argentinos)
                 ];
             }
-          
+    
             $paymentMethods = [
                 "excluded_payment_methods" => [],
-                "excluded_payment_types"=> array(
-                    array(
-                        "id" => "ticket"
-                    ),
-                    array(
-                      "id" => "debit_card"  
-                    ),
-                ),
+                "excluded_payment_types" => [
+                    ["id" => "ticket"],
+                    ["id" => "debit_card"],
+                ],
                 "installments" => 12,
                 "default_installments" => 1
-                ];
-
-            // Crear la solicitud
-            $request = [
+            ];
+    
+            // Crear el objeto "shipments" con el costo de envío obtenido del request
+            $shipments = [
+                "cost" => $costoEnvio,
+                "mode" => "not_specified" // Puedes cambiar el modo de envío si es necesario
+            ];
+    
+            // Crear la solicitud de preferencia de pago
+            $requestPayload = [
                 "items" => $items,
                 "payment_methods" => $paymentMethods,
                 "statement_descriptor" => "NAME_DISPLAYED_IN_USER_BILLING",
                 "external_reference" => "1234567890",
-                // "payer" => [
-                //     "email" => "user@test.com"
-                // ],
                 "back_urls" => [
                     'success' => route('payment.success'),
                     'failure' => route('payment.failure'),
@@ -94,31 +138,26 @@ class CartController extends Controller
                 ],
                 "expires" => false,
                 "auto_return" => "approved",
-                "site_id" => "MLA"
+                "site_id" => "MLA",
+                "shipments" => $shipments // Agregar el costo de envío
             ];
-        
-            // Realizar la solicitud
+    
+            // Realizar la solicitud de creación de preferencia
             $client = new PreferenceClient();
-            $payment = $client->create($request);
-               // Asegurar que el site_id esté configurado correctamente
-           
-            // Mostrar el ID del pago
-          // dd($payment);
-        
+            $payment = $client->create($requestPayload);
+           // dd($payment); // Muestra los detalles de la respuesta de MercadoPago
+    
         } catch (MPApiException $e) {
-            // Obtener detalles de la respuesta de la API
             echo "Código de estado: " . $e->getApiResponse()->getStatusCode() . "\n";
             echo "Contenido de la respuesta: " . json_encode($e->getApiResponse()->getContent()) . "\n";
         } catch (\Exception $e) {
-            // Manejar otras excepciones
             echo $e->getMessage();
         }
-
-
-    // Pasar la variable a la vista
-    return view('page.cart-consumidor.details-consumidor', compact('datos', 'cartItems','redes', 'contacto', 'logo', 'cartSubotal', 'cartTotal', 'carritoinfo','cartCount', 'payment'));
+    
+        // Pasar la variable a la vista
+        return view('page.cart-consumidor.details-consumidor', compact('datos', 'cartItems', 'redes', 'contacto', 'logo', 'cartSubtotal', 'cartTotal', 'carritoinfo', 'cartCount', 'payment', 'costoEnvio'));
     }
-
+    
 
 
     public function success(Request $request)
@@ -178,7 +217,7 @@ public function processCheckout2(Request $request)
         $order->envio = $validated['envio'];
 
         // Calcula el subtotal, descuento y total
-        $subtotal = Cart::subtotal(2, '.', '');
+        $subtotal = $this->cartSubtotal();
         $discount = 0;
 
         // Aplica el descuento según el método de pago
@@ -317,29 +356,7 @@ public function processCheckout2(Request $request)
     //     return $preference;
     // }
 
-    // public function calcularEnvio(Request $request)
-    // {
-    //     // Validar que se haya ingresado un código postal
-    //     $request->validate([
-    //          'codigo_postal' => 'required|exists:codigos_postales,cp'
-    //      ]);
 
-    //     // Buscar la zona asociada al código postal
-    //     $codigoPostal = Codigopostale::where('cp', $request->codigo_postal)->first();
-    //     if ($codigoPostal) {
-            
-    //         $zona = $codigoPostal->zona;
-    //         // Encuentra el costo de la zona
-    //         $zonaPostal = Zonapostale::where('nombre', $zona)->first();
-    //         $costo = $zonaPostal->costo;
-    //         //dd($costo);
-
-    //         // Devolver el costo como respuesta
-    //         return response()->json(['costo' => $costo], 200);
-    //     }
-
-    //     return response()->json(['error' => 'Código postal no encontrado'], 404);
-    // }
 
 
     public function cartdetailsconsumidor()
@@ -351,10 +368,10 @@ public function processCheckout2(Request $request)
         $contacto = Contacto::first(); // Si sólo hay un contacto, puedes usar first()
         $informacion = Carritoinfo::first(); // Si sólo hay un contacto, puedes usar first()
         $cartItems = Cart::content();
-        $cartSubotal = $this->cartSubtotal();
+        $cartSubtotal = $this->cartSubtotal();
         $cartTotal = $this->cartTotal();
         $cartCount = Cart::content()->count();
-        return view('page.cart-consumidor.carrito', compact('cartItems','redes', 'contacto', 'logo', 'cartSubotal', 'cartTotal', 'cartCount', 'informacion'));
+        return view('page.cart-consumidor.carrito', compact('cartItems','redes', 'contacto', 'logo', 'cartSubtotal', 'cartTotal', 'cartCount', 'informacion'));
     }
 
 
@@ -365,10 +382,10 @@ public function processCheckout2(Request $request)
         $redes = Rede::first();
         $contacto = Contacto::first(); // Si sólo hay un contacto, puedes usar first()
         $cartItems = Cart::content();
-        $cartSubotal = $this->cartSubtotal();
+        $cartSubtotal = $this->cartSubtotal();
         $cartTotal = $this->cartTotal();
         $cartCount = Cart::content()->count();
-        return view('page.cart-consumidor.details-consumidor', compact('cartItems','redes', 'contacto', 'logo', 'cartSubotal', 'cartTotal', 'cartCount'));
+        return view('page.cart-consumidor.details-consumidor', compact('cartItems','redes', 'contacto', 'logo', 'cartSubtotal', 'cartTotal', 'cartCount'));
     }
 
     
@@ -467,7 +484,7 @@ public function processCheckout2(Request $request)
         }
 
         // Format the subtotal as a float for consistency
-        $subtotal = number_format((float) $subtotal, 2, ',', '.');
+        //$subtotal = number_format((float) $subtotal, 2, ',', '.');
 
         return $subtotal;
     }

@@ -3,7 +3,7 @@
   
     padding: 10px 0;
 }
-.breadcrumb-item a{
+.breadcrumb-item .breadcrumb-item-menu{
     color: var(--Gris-medio, #4F4F4F) !important;
 
     /* Body/Bold/Body 14 */
@@ -13,7 +13,7 @@
     font-weight: 400;
     line-height: 150%; /* 21px */
 }
-.breadcrumb-item a:hover{
+.breadcrumb-item .breadcrumb-item-menu:hover{
     color: #FE2324 !important;
 
     /* Body/Bold/Body 14 */

@@ -24,4 +24,26 @@ class Producto extends Model
     {
         return $this->belongsToMany(Color::class, 'color_producto');
     }
+
+    
+    public function obtenerPrecioConDescuento($cantidadComprada)
+    {
+        $precio = $this->precio;
+
+        if ($cantidadComprada >= $this->cantidad_dos) {
+            // Aplicar el segundo descuento si la cantidad es mayor o igual a "cantidad_dos"
+            $precioConDescuento = $precio - ($precio * ($this->descuento_dos / 100));
+        } elseif ($cantidadComprada >= $this->cantidad) {
+            // Aplicar el primer descuento si la cantidad es mayor o igual a "cantidad"
+            $precioConDescuento = $precio - ($precio * ($this->descuento / 100));
+        } else {
+            // No hay descuento
+            $precioConDescuento = $precio;
+        }
+
+        return round($precioConDescuento, 2); // Redondear a 2 decimales
+    }
+
+
+
 }

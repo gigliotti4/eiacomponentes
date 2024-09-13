@@ -110,7 +110,7 @@
       </div>
     </li>
 
-
+{{-- 
     <li class="sidebar-item">
       <a href="" class="nav-link collapsed" data-bs-toggle="collapse" data-bs-target="#collapseNovedades" aria-expanded="false" aria-controls="colappseNovedades">
         <div class="nav-link-icon">
@@ -134,7 +134,7 @@
         </nav>
       </div>
    
-    </li>
+    </li> --}}
 
     <li class="sidebar-item">
       <a href="" class="nav-link  collapsed" data-bs-toggle="collapse" data-bs-target="#collapseSectores" aria-expanded="false" aria-controls="colappseSectores">
@@ -189,7 +189,7 @@
       </div>
       <div id="collapseLoginclientes" class="collapse">
         <nav class="sidenav-menu-nested nav accordion">
-          <a href="{{ route('admin.carritoinfo.edit', 1) }}" class="nav-link  ">aa</a>
+          <a href="{{ route('admin.carritoinfo.edit', 1) }}" class="nav-link  ">Informacion Carrito</a>
         </nav>
       </div>
      

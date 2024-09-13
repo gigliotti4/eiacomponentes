@@ -5,8 +5,8 @@
     <div class="container">
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
-              <li class="breadcrumb-item"><a href="{{route('index')}}">Inicio</a></li>
-              <li class="breadcrumb-item"><a href="{{route('index')}}">{{$producto->categoria->nombre}}</a></li>
+              <li class="breadcrumb-item"><a class="breadcrumb-item-menu" href="{{route('index')}}">Inicio</a></li>
+              <li class="breadcrumb-item"><a class="breadcrumb-item-menu" href="{{route('index')}}">{{$producto->categoria->nombre}}</a></li>
               <strong class="breadcrumb-item active" >{{$producto->nombre}}</li>
             </ol>
           </nav>

@@ -1,7 +1,19 @@
 @extends('layouts.app')
 @section('title', 'Mayorista')
 @section('content')
+<div class="bg__breadcrumb">
 
+    <div class="container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+              <li class="breadcrumb-item"><a href="{{route('index')}}">Inicio</a></li>
+              <li class="breadcrumb-item active" >Contacto</li>
+
+            </ol>
+        
+          </nav>
+    </div>
+</div> 
 <div class="container my-5">
  
     
