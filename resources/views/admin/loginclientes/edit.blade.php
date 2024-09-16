@@ -56,6 +56,20 @@
             <label for="dni">dni</label>
             <input type="text" class="form-control" id="dni" name="dni" value="{{ $cliente->dni }}" required>
         </div>
+
+         <!-- Nuevo Campo Estado -->
+         <div class="form-group col-md-6">
+            <label for="estado">Estado</label>
+            <select name="estado" id="estado" class="form-control @error('estado') is-invalid @enderror" required>
+                <option value="1" {{ $cliente->estado == 1 ? 'selected' : '' }}>Activo</option>
+                <option value="0" {{ $cliente->estado == 0 ? 'selected' : '' }}>Inactivo</option>
+            </select>
+            @error('estado')
+                <div class="invalid-feedback">
+                    {{ $message }}
+                </div>
+            @enderror
+        </div>
    
 
         <div class="form-group col-md-6">

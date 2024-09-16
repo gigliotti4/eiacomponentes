@@ -37,17 +37,17 @@ class CodigopostaleController extends Controller
         return view('admin.codigospostales.edit', compact('codigos', 'zonas'));
     }
 
-    public function update(Request $request){
-        return $request->codigos;
-        if(isset($request->codigos)){
-            foreach($request->codigos as $id){
-                $codigo = Codigopostale::find($id);
-                $codigo->zona = $request->zona;
-                $codigo->save();
-            }
-            return redirect()->route('admin.codigospostales.index')->with('success', 'Categoría actualizada exitosamente.');
-        } else {
-            return redirect()->route('admin.codigospostales.index')->with('success', 'Categoría actualizada exitosamente.');
-        }
+    public function update(Request $request, $id){
+       // Encontrar el código postal a actualizar
+    $codigo = Codigopostale::findOrFail($id);
+
+    // Actualizar los campos
+    $codigo->cp = $request->input('cp');
+    $codigo->provincia = $request->input('provincia');
+    $codigo->localidad = $request->input('localidad');
+    $codigo->zona = $request->input('zona');
+    $codigo->save();
+
+    return redirect()->route('admin.codigospostales.index')->with('success', 'Código Postal actualizado exitosamente.');
     }
 }

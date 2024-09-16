@@ -8,6 +8,17 @@
             {{ session('success') }}
         </div>
     @endif
+
+    @if ($errors->any())
+    <div class="alert alert-danger">
+        <strong>¡Ups! Hubo algunos problemas con tu entrada:</strong>
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
     <div class="card">
         <div class="card-header">
             <h2 class="mb-0">Registrarse</h2>

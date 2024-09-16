@@ -68,6 +68,19 @@ class ProductoController extends Controller
             $producto->colores()->sync($request->colores);
         }
 
+            // Buscar productos relacionados dentro de la misma categoría
+            $relacionados = Producto::where('categoria_id', $producto->categoria_id)
+            ->where('id', '!=', $producto->id)
+            ->inRandomOrder()
+            ->limit(4) // Limita a 3 productos relacionados
+            ->get();
+
+        // Asigna productos relacionados
+        foreach ($relacionados as $relacionado) {
+        $producto->relaciones()->attach($relacionado->id);
+        }
+
+
         return redirect()->route('admin.productos.index')->with('success', 'Producto creado exitosamente.');
     }
 
@@ -124,6 +137,16 @@ class ProductoController extends Controller
         } else {
             $producto->colores()->detach();
         }
+
+           // Obtener 3 productos aleatorios de la misma categoría, excluyendo el producto actual
+            $relacionados = Producto::where('categoria_id', $producto->categoria_id)
+            ->where('id', '!=', $producto->id)
+            ->inRandomOrder()
+            ->limit(4)
+            ->pluck('id')->toArray();
+
+        // Sincronizar los productos relacionados
+        $producto->relaciones()->sync($relacionados);
 
         return redirect()->route('admin.productos.index')->with('success', 'Producto "' . $producto->nombre . '" actualizado exitosamente.');
     }

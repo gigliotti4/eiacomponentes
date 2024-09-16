@@ -31,11 +31,12 @@ class PageController extends Controller
     $logo = Logo::first();
     $inicio = Inicio::first();
     $redes = Rede::first();
+    $productos = Producto::orderBy('orden', 'asc')->get();
     $contacto = Contacto::first(); // Si sólo hay un contacto, puedes usar first()
     $sliders = Slider::where('seccion', 'inicio')->get();
     $cartCount = Cart::content()->count();
     // Pasar los datos a la vista
-    return view('page.index', compact('inicio', 'redes', 'contacto', 'sliders', 'logo', 'cartCount'));
+    return view('page.index', compact('inicio', 'redes', 'contacto', 'sliders', 'logo', 'cartCount', 'productos'));
     }
 
 
@@ -91,9 +92,15 @@ class PageController extends Controller
             $producto = Producto::find($id);
             $colores = Color::orderBy('orden', 'asc')->get();
             $cartCount = Cart::content()->count();
+
+             // Obtener el producto principal con sus relaciones
+                $producto = Producto::with(['categoria', 'colores', 'relaciones'])->findOrFail($id);
+
+                // Obtener los productos relacionados
+                $productosRelacionados = $producto->relaciones()->with(['categoria', 'colores'])->get();
            // $sliders = Slider::where('seccion', 'inicio')->get();
             // Pasar los datos a la vista
-            return view('page.producto', compact('empresa', 'redes', 'contacto', 'logo', 'categorias', 'producto', 'colores', 'cartCount'));
+            return view('page.producto', compact('empresa', 'redes', 'contacto', 'logo', 'categorias', 'producto', 'colores', 'cartCount',  'productosRelacionados'));
             
             }
 

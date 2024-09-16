@@ -25,7 +25,9 @@
 
 <div class="container my-5">
     <div class="row">
-    
+        <div class="mb-4">
+            <input type="text" id="search-input" class="form-control" placeholder="Buscar productos...">
+        </div>
             @if ($productos->isEmpty())
                 <p>No hay productos disponibles.</p>
             @else
@@ -119,6 +121,23 @@
         }
     }
 
+    $(document).ready(function() {
+            // Filtrado de tabla en el lado del cliente
+            $('#search-input').on('keyup', function() {
+                let query = $(this).val().toLowerCase();
+                $('#productos-table tbody tr').each(function() {
+                    let row = $(this);
+                    let codigo = row.find('td:nth-child(2)').text().toLowerCase();
+                    let nombre = row.find('td:nth-child(3)').text().toLowerCase();
+                    let categoria = row.find('td:nth-child(4)').text().toLowerCase();
+                    if (codigo.includes(query) || nombre.includes(query) || categoria.includes(query)) {
+                        row.show();
+                    } else {
+                        row.hide();
+                    }
+                });
+            });
+        });
     // Configuración global de AJAX para incluir el token CSRF
     $.ajaxSetup({
         headers: {

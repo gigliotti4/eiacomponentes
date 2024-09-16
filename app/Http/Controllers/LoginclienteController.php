@@ -9,6 +9,7 @@ use App\Models\Rede;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use CodersFree\Shoppingcart\Facades\Cart;
 
 class LoginclienteController extends Controller
 {
@@ -19,7 +20,8 @@ class LoginclienteController extends Controller
         $logo = Logo::first();
         $redes = Rede::first();
         $contacto = Contacto::first(); // Si sólo hay un contacto, puedes usar first()
-        return view('page.zonacliente.registrarse' ,compact('redes', 'contacto', 'logo'));
+        $cartCount = Cart::content()->count();
+        return view('page.zonacliente.registrarse' ,compact('redes', 'contacto', 'logo', 'cartCount'));
     }
 
 
@@ -61,7 +63,7 @@ class LoginclienteController extends Controller
             'email' => ['required', 'string', 'email', 'max:255', 'unique:loginclientes'],
             'direccion' => ['required', 'string', 'max:255'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
-            'role' => ['required', 'string', 'in:fabricante,minorista,mayorista'], // Restrict role to specific values
+            'role' => ['string', 'in:fabricante,minorista,mayorista'], // Restrict role to specific values
         ]);
     }
     
@@ -79,7 +81,7 @@ class LoginclienteController extends Controller
             'direccion' => $data['direccion'],
             'password' => Hash::make($data['password']),
             'estado' => 0,
-            'role' => $data['role'] // Add role field
+            'role' => 0 // Add role field
         ]);
     }
     
@@ -98,7 +100,7 @@ class LoginclienteController extends Controller
         'email' => ['required', 'string', 'email', 'max:255', 'unique:loginclientes'],
         'direccion' => ['required', 'string', 'max:255'],
         'password' => ['required', 'string', 'min:8', 'confirmed'],
-        'role' => ['required', 'string', 'in:fabricante,minorista,mayorista'], // Validar el rol
+        'role' => ['string', 'in:fabricante,minorista,mayorista'], // Validar el rol
     ]);
 
     if ($validator->fails()) {
@@ -147,6 +149,7 @@ class LoginclienteController extends Controller
             'direccion' => ['required', 'string', 'max:255'],
             'password' => ['nullable', 'string', 'min:8', 'confirmed'],
             'role' => ['required', 'string', 'in:fabricante,minorista,mayorista'], // Validate role
+            'estado' => ['required', 'boolean'], // Nueva regla de validación para 'estado'
         ]);
     
         if ($validator->fails()) {
@@ -162,6 +165,7 @@ class LoginclienteController extends Controller
         $cliente->email = $data['email'];
         $cliente->direccion = $data['direccion'];
         $cliente->role = $data['role']; // Update role
+        $cliente->estado = $data['estado']; // Update estado
     
         if (!empty($data['password'])) {
             $cliente->password = Hash::make($data['password']);

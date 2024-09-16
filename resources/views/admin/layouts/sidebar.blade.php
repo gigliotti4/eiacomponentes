@@ -218,11 +218,11 @@
           <a href="{{ route('admin.logos.edit', ['id' => 1]) }}" class="nav-link ">Logos</a>
         </nav>
       </div>
-      <div id="collapseConfiguracion" class="collapse">
+      {{-- <div id="collapseConfiguracion" class="collapse">
         <nav class="sidenav-menu-nested nav accordion">
           <a href="{{ route('admin.redes.edit', ['id' => 1]) }}" class="nav-link ">Redes Sociales</a>
         </nav>
-      </div>
+      </div> --}}
 
     </li>
     @if(Auth::user()->role == 'Administrador')

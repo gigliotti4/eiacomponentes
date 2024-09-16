@@ -25,6 +25,11 @@ class Producto extends Model
         return $this->belongsToMany(Color::class, 'color_producto');
     }
 
+    public function relaciones()
+{
+    return $this->belongsToMany(Producto::class, 'prelaciones', 'producto_id', 'relacionado_id');
+}
+
     
     public function obtenerPrecioConDescuento($cantidadComprada)
     {

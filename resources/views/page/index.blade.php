@@ -40,6 +40,30 @@
 </div>
 
 
+<div class="container my-5">
+    <div class="row">
+        @foreach ($productos as $producto)
+        <div class="col-6 col-md-3">
+          <a href="{{route('producto', $producto->id)}}" class="card mb-4">
+            <img src="{{ asset(Storage::url($producto->imagen)) }}" class="card-img-top imagen" alt="{{ $producto->nombre }}">
+            <div class="card-body">
+              {{-- <p>{{ $producto->colores->pluck('nombre')->implode(', ') }}</p> --}}
+              <div class="d-flex justify-content-between">
+                  <div class="card-subtitulo">{{ $producto->categoria->nombre }}</div>
+                  <div class="card-codigo">COD.{{ $producto->codigo }}</div>
+              </div>
+              <h5 class="card-titulo">{{ $producto->nombre }}</h5>
+              {{-- <p class="card-text">{!! $producto->descripcion !!}</p> --}}
+               <p class="card-precio"> ${{ number_format($producto->precio, 2, ',', '.') }}</p>
+              <hr>
+     
+            </div>
+          </a>
+        </div>
+      @endforeach
+    </div>
+</div>
+
 
 <div class=" mt-5" style="overflow: hidden" data-aos="fade-up" data-aos-duration="1500">
     <div class="row ">
@@ -57,7 +81,7 @@
        
 
                 <h3 class="contenido__titulo">{{$inicio->titulo}}</h3>
-                <p class="contenido__descripcion my-5">{!!$inicio->descripcion!!}</p>
+                <div class="contenido__descripcion my-5">{!!$inicio->descripcion!!}</div>
                 <a type="button" href="{{ route('empresa') }}" class="btn btn__white mb-2 px-5" >MÁS INFORMACIÓN</a>
           
          

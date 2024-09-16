@@ -78,7 +78,34 @@
                 </div>
                 
             </div>
+
+           
         </div>
+            <!-- Productos Relacionados -->
+            <div class="col-md-12">
+                <h3>Productos Relacionados</h3>
+                @if ($productosRelacionados->isEmpty())
+                    <p>No hay productos relacionados disponibles.</p>
+                @else
+                    <div class="row">
+                        @foreach ($productosRelacionados as $relacionado)
+                            <div class="col-6 col-md-3">
+                                <a href="{{ route('producto', $relacionado->id) }}" class="card mb-4">
+                                    <img src="{{ asset(Storage::url($relacionado->imagen)) }}" class="card-img-top" alt="{{ $relacionado->nombre }}">
+                                    <div class="card-body">
+                                        <div class="d-flex justify-content-between">
+                                            <div class="card-subtitulo">{{ $relacionado->categoria->nombre }}</div>
+                                            <div class="card-codigo">COD.{{ $relacionado->codigo }}</div>
+                                        </div>
+                                        <h5 class="card-titulo">{{ $relacionado->nombre }}</h5>
+                                        <p class="card-precio"> ${{ number_format($relacionado->precio, 2, ',', '.') }}</p>
+                                    </div>
+                                </a>
+                            </div>
+                        @endforeach
+                    </div>
+                @endif
+            </div>
     </div>
 </div>
 
