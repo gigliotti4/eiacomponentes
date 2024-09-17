@@ -11,6 +11,7 @@ use App\Models\Categoria;
 use App\Models\Producto;
 use App\Models\Color;
 use App\Models\Inyeccion;
+use App\Models\Comprar;
 
 use Illuminate\Support\Facades\Mail;
 use App\Mail\ContactoMail;
@@ -165,6 +166,18 @@ class PageController extends Controller
         return view('page.presupuesto', compact('redes', 'contacto', 'logo', 'cartCount'));
     }
 
+
+    public function comprar(){
+        // Obtener los datos de los modelos
+        $logo = Logo::first();
+        $redes = Rede::first();
+        $contacto = Contacto::first(); // Si sólo hay un contacto, puedes usar first()
+        $comprar = Comprar::orderBy('orden', 'asc')->get();
+        $cartCount = Cart::content()->count();
+        $sliders = Slider::where('seccion', 'Compra')->get();
+        // Pasar los datos a la vista
+        return view('page.comprar', compact('redes', 'contacto', 'logo', 'cartCount', 'sliders', 'comprar'));
+    }
     public function newsletter(Request $request)
     {
         $validator = Validator::make($request->all(), [

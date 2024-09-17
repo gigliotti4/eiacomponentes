@@ -84,6 +84,37 @@
 @push('scripts')
 
 <script>
+document.addEventListener('DOMContentLoaded', function() {
+    const navbarToggler = document.querySelector('.navbar-toggler');
+    const navbarNav = document.querySelector('.navbar-nav');
+    const comercianteBtn = document.querySelector('.btn[data-bs-target="#loginModal"]');
+
+    navbarToggler.addEventListener('click', function() {
+        // Cambiar las clases de los enlaces del navbar cuando se expande o se colapsa
+        navbarNav.querySelectorAll('.nav-link').forEach(link => {
+            if (!navbarNav.classList.contains('show')) {
+                // Cambiar a 'nav__menu__inicio' cuando se expande el menú
+                link.classList.remove('nav__menu__inicio');
+                link.classList.add('nav__menu');
+            } else {
+                // Cambiar a 'nav__menu' cuando se colapsa el menú
+                link.classList.remove('nav__menu');
+                link.classList.add('nav__menu__inicio');
+            }
+        });
+
+        // Cambiar la clase del botón Comerciante
+        if (!navbarToggler.classList.contains('collapsed')) {
+            comercianteBtn.classList.remove('btn__transparente');
+            comercianteBtn.classList.add('btn__rojo');
+        } else {
+            comercianteBtn.classList.remove('btn__rojo');
+            comercianteBtn.classList.add('btn__transparente');
+        }
+    });
+});
+
+
     $(document).ready(function() {
         $('form.input-with-arrow').on('submit', function(e) {
             e.preventDefault();

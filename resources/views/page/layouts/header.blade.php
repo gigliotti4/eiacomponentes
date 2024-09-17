@@ -1,4 +1,4 @@
-<nav class="navbar navbar-expand-lg  @if (request()->routeIs('index') || request()->routeIs('empresa') || request()->routeIs('inyecciones')) bg-transparent  @else bg-white shadow @endif">
+<nav class="navbar navbar-expand-lg  @if (request()->routeIs('index') || request()->routeIs('empresa') || request()->routeIs('comprar') || request()->routeIs('inyecciones')) bg-transparent  @else bg-white shadow @endif">
     <div class="container">
         <!-- Logo -->
         <a class="navbar-brand" href="{{ route('index') }}">
@@ -22,17 +22,17 @@
                 </div>
                 <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
                     <li class="nav-item">
-                        <a class="nav-link {{ request()->routeIs('index') || request()->routeIs('empresa') || request()->routeIs('inyecciones') ? 'nav__menu__inicio' : 'nav__menu' }} {{ request()->routeIs('cart.index') ? 'active__header' : '' }}" href="{{ route('cart.index') }}">Pedidos</a>
+                        <a class="nav-link {{ request()->routeIs('index') || request()->routeIs('empresa') || request()->routeIs('inyecciones') || request()->routeIs('comprar') ? 'nav__menu__inicio' : 'nav__menu' }} {{ request()->routeIs('cart.index') ? 'active__header' : '' }}" href="{{ route('cart.index') }}">Pedidos</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {{ request()->routeIs('index') || request()->routeIs('empresa') || request()->routeIs('inyecciones') ? 'nav__menu__inicio' : 'nav__menu' }} {{ request()->routeIs('cart.details') ? 'active__header' : '' }}" href="{{ route('cart.details') }}">Carrito</a>
+                        <a class="nav-link {{ request()->routeIs('index') || request()->routeIs('empresa') || request()->routeIs('inyecciones') || request()->routeIs('comprar') ? 'nav__menu__inicio' : 'nav__menu' }} {{ request()->routeIs('cart.details') ? 'active__header' : '' }}" href="{{ route('cart.details') }}">Carrito</a>
                     </li>
                 </ul>
             @else
                 <!-- Login button -->
                 <div class="ms-auto">
 
-                    @if(request()->routeIs('index') || request()->routeIs('empresa') || request()->routeIs('inyecciones'))
+                    @if(request()->routeIs('index') || request()->routeIs('empresa') || request()->routeIs('inyecciones') || request()->routeIs('comprar'))
                     <a href="#" class="btn btn__transparente" data-bs-toggle="modal" data-bs-target="#loginModal">
                             {{-- <img src="{{ asset('img/user.svg') }}" alt=""> --}}
                             <span>
@@ -49,7 +49,7 @@
                         </a>
                         @endif
                     <a href="{{route('cart.details.consumidor')}}" class="">
-                        @if(request()->routeIs('index') || request()->routeIs('empresa') || request()->routeIs('inyecciones'))
+                        @if(request()->routeIs('index') || request()->routeIs('empresa') || request()->routeIs('inyecciones') || request()->routeIs('comprar'))
                         <img src="{{ asset('img/shopping-cart-white.svg') }}" alt="">
                         <span class="cart-count">{{$cartCount}}</span>
                         @else 
@@ -64,25 +64,25 @@
             <!-- Navbar links -->
             <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-                    <a class="nav-link {{ request()->routeIs('index') || request()->routeIs('empresa') || request()->routeIs('inyecciones') ? 'nav__menu__inicio' : 'nav__menu' }} {{ request()->routeIs('categorias') ? 'active__header' : '' }}" href="{{ route('categorias') }}">Productos</a>
+                    <a class="nav-link {{ request()->routeIs('index') || request()->routeIs('empresa') || request()->routeIs('inyecciones') || request()->routeIs('comprar') ? 'nav__menu__inicio' : 'nav__menu' }} {{ request()->routeIs('categorias') ? 'active__header' : '' }}" href="{{ route('categorias') }}">Productos</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link {{ request()->routeIs('index') || request()->routeIs('empresa') || request()->routeIs('inyecciones') ? 'nav__menu__inicio' : 'nav__menu' }} {{ request()->routeIs('empresa') ? 'active__header' : '' }}" href="{{ route('empresa') }}">Nosotros</a>
+                    <a class="nav-link {{ request()->routeIs('index') || request()->routeIs('empresa') || request()->routeIs('inyecciones') || request()->routeIs('comprar') ? 'nav__menu__inicio' : 'nav__menu' }} {{ request()->routeIs('empresa') ? 'active__header' : '' }}" href="{{ route('empresa') }}">Nosotros</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link {{ request()->routeIs('index') || request()->routeIs('empresa') || request()->routeIs('inyecciones') ? 'nav__menu__inicio' : 'nav__menu' }} {{ request()->routeIs('aplicaciones') ? 'active__header' : '' }}" href="{{ route('inyecciones') }}">Inyección de plástico</a>
+                    <a class="nav-link {{ request()->routeIs('index') || request()->routeIs('empresa') || request()->routeIs('inyecciones') || request()->routeIs('comprar') ? 'nav__menu__inicio' : 'nav__menu' }} {{ request()->routeIs('aplicaciones') ? 'active__header' : '' }}" href="{{ route('inyecciones') }}">Inyección de plástico</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link {{ request()->routeIs('index') || request()->routeIs('empresa') || request()->routeIs('inyecciones') ? 'nav__menu__inicio' : 'nav__menu' }} {{ request()->routeIs('presupuesto') ? 'active__header' : '' }}" href="{{ route('presupuesto') }}">Mayorista</a>
+                    <a class="nav-link {{ request()->routeIs('index') || request()->routeIs('empresa') || request()->routeIs('inyecciones') || request()->routeIs('comprar') ? 'nav__menu__inicio' : 'nav__menu' }} {{ request()->routeIs('presupuesto') ? 'active__header' : '' }}" href="{{ route('presupuesto') }}">Mayorista</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link {{ request()->routeIs('index') || request()->routeIs('empresa') || request()->routeIs('inyecciones') ? 'nav__menu__inicio' : 'nav__menu' }} {{ request()->routeIs('sectores') ? 'active__header' : '' }}" href="">Como comprar</a>
+                    <a class="nav-link {{ request()->routeIs('index') || request()->routeIs('empresa') || request()->routeIs('inyecciones') || request()->routeIs('comprar') ? 'nav__menu__inicio' : 'nav__menu' }} {{ request()->routeIs('comprar') ? 'active__header' : '' }}" href="{{ route('comprar') }}">Como comprar</a>
                 </li>
                 {{-- <li class="nav-item">
-                    <a class="nav-link {{ request()->routeIs('index') || request()->routeIs('empresa') || request()->routeIs('inyecciones') ? 'nav__menu__inicio' : 'nav__menu' }} {{ request()->routeIs('novedades', 'novedad') ? 'active__header' : '' }}" href="">Novedades</a>
+                    <a class="nav-link {{ request()->routeIs('index') || request()->routeIs('empresa') || request()->routeIs('inyecciones') || request()->routeIs('comprar') ? 'nav__menu__inicio' : 'nav__menu' }} {{ request()->routeIs('novedades', 'novedad') ? 'active__header' : '' }}" href="">Novedades</a>
                 </li> --}}
                 <li class="nav-item">
-                    <a class="nav-link {{ request()->routeIs('index') || request()->routeIs('empresa') || request()->routeIs('inyecciones') ? 'nav__menu__inicio' : 'nav__menu' }} {{ request()->routeIs('contacto.*') ? 'active__header' : '' }}" href="{{ route('contacto') }}">Contacto</a>
+                    <a class="nav-link {{ request()->routeIs('index') || request()->routeIs('empresa') || request()->routeIs('inyecciones') || request()->routeIs('comprar') ? 'nav__menu__inicio' : 'nav__menu' }} {{ request()->routeIs('contacto.*') ? 'active__header' : '' }}" href="{{ route('contacto') }}">Contacto</a>
                 </li>
             </ul>
             @endauth

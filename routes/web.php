@@ -7,6 +7,7 @@ Route::get('/', [App\Http\Controllers\PageController::class, 'index'])->name('in
 Route::get('/empresa', [App\Http\Controllers\PageController::class, 'empresa'])->name('empresa');
 Route::get('/contacto', [App\Http\Controllers\PageController::class, 'contacto'])->name('contacto');
 Route::get('/inyecciones', [App\Http\Controllers\PageController::class, 'inyecciones'])->name('inyecciones');
+Route::get('/comprar', [App\Http\Controllers\PageController::class, 'comprar'])->name('comprar');
 Route::get('/categorias', [App\Http\Controllers\PageController::class, 'categorias'])->name('categorias');
 Route::get('/producto/{id}', [App\Http\Controllers\PageController::class, 'producto'])->name('producto');
 Route::get('/productos', [App\Http\Controllers\PageController::class, 'filtroProducto'])->name('filtroproducto');
@@ -130,7 +131,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::put('/update/{id}', [App\Http\Controllers\admin\ColorController::class, 'update'])->name('update');
             Route::delete('destroy/{id}', [App\Http\Controllers\admin\ColorController::class, 'destroy'])->name('destroy');
         });
-    
+        Route::prefix('admin')->group(function () {
+            Route::resource('comprar', App\Http\Controllers\admin\ComprarController::class);
+        });
 
         // Codigopostales routes
             Route::prefix('codigospostales')->name('codigospostales.')->group(function () {

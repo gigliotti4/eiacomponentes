@@ -239,6 +239,26 @@ display: flex;
     font-weight: 400;
     line-height: normal;
 }
+
+/* Estilo para las tarjetas */
+.card {
+    overflow: hidden; /* Para asegurarse de que la imagen no sobresalga de la tarjeta */
+    /* Quita bordes, si hay */
+    transition: transform 0.3s ease-in-out; /* Añadir una transición suave al zoom */
+}
+
+/* Estilo para la imagen de la tarjeta */
+.card-img-top {
+    transition: transform 0.3s ease-in-out; /* Añade una transición suave al zoom de la imagen */
+    width: 100%;
+    height: auto;
+}
+
+/* Efecto hover en la tarjeta: Escalar la imagen */
+.card:hover .card-img-top {
+    transform: scale(1.1); /* Aplica el zoom del 10% */
+}
+
 .card-subtitulo{
 color: var(--Azul, #FE2324);
 font-family: "Work Sans";

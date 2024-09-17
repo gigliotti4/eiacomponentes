@@ -13,31 +13,36 @@
 </div> 
 <div class="container my-5">
     <div class="row">
-        <!-- Sidebar de Categorías y Colores -->
-        <div class="col-md-3">
-            <ul class=" list-group border mb-4">
-                <h4 class="p-3 border-bottom titulo__producto">Categorías</h4>
-                @foreach($categorias as $categoria)
-                    <li class="list-group-item border-0">
-                        <a href="{{ route('filtroproducto', ['categoria_id' => $categoria->id]) }}" class="list-menu">
-                            {{ $categoria->nombre }}
-                        </a>
-                    </li>
-                @endforeach
-            </ul>
+      <!-- Sidebar de Categorías y Colores -->
+<div class="col-md-3">
+  <!-- Categorías -->
+  <ul class="list-group border mb-4">
+      <h4 class="p-3 border-bottom titulo__producto">Categorías</h4>
+      @foreach($categorias as $categoria)
+          <li class="list-group-item border-0">
+              <a href="{{ route('filtroproducto', ['categoria_id' => $categoria->id]) }}" 
+                 class="list-menu @if(request('categoria_id') == $categoria->id) active__header @endif">
+                  {{ $categoria->nombre }}
+              </a>
+          </li>
+      @endforeach
+  </ul>
 
-            <ul class=" list-group border">
-                <h4 class="p-3 border-bottom titulo__producto">Colores</h4>
-                @foreach($colores as $color)
-                    <li class="list-group-item border-0 d-flex align-items-center">
-                        <span class="color-box border" style="background-color: {{ $color->color }}; width: 20px; height: 20px; display: inline-block; margin-right: 10px;"></span>
-                        <a href="{{ route('filtroproducto', ['categoria_id' => request('categoria_id'), 'color_id' => $color->id]) }}" class="list-menu">
-                            {{ $color->nombre }}
-                        </a>
-                    </li>
-                @endforeach
-            </ul>
-        </div>
+  <!-- Colores -->
+  <ul class="list-group border">
+      <h4 class="p-3 border-bottom titulo__producto">Colores</h4>
+      @foreach($colores as $color)
+          <li class="list-group-item border-0 d-flex align-items-center">
+              <span class="color-box border" style="background-color: {{ $color->color }}; width: 20px; height: 20px; display: inline-block; margin-right: 10px;"></span>
+              <a href="{{ route('filtroproducto', ['categoria_id' => request('categoria_id'), 'color_id' => $color->id]) }}" 
+                 class="list-menu @if(request('color_id') == $color->id) active__header @endif">
+                  {{ $color->nombre }}
+              </a>
+          </li>
+      @endforeach
+  </ul>
+</div>
+
         <div class="col-md-9">
            
             @if ($productos->isEmpty())
