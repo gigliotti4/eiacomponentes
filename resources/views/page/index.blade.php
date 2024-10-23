@@ -49,7 +49,7 @@
             <div class="card-body">
               {{-- <p>{{ $producto->colores->pluck('nombre')->implode(', ') }}</p> --}}
               <div class="d-flex justify-content-between">
-                  <div class="card-subtitulo">{{ $producto->categoria->nombre }}</div>
+                  {{-- <div class="card-subtitulo">{{ $producto->categorias->nombre }}</div> --}}
                   <div class="card-codigo">COD.{{ $producto->codigo }}</div>
               </div>
               <h5 class="card-titulo">{{ $producto->nombre }}</h5>

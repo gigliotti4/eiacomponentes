@@ -178,6 +178,14 @@
                 </div>
                         <!-- Campo oculto para el costo de envío -->
                     <input type="hidden" name="costo_envio" id="costoEnvioInput" value="0">
+                    
+                      <div class="d-flex my-3 justify-content-between">
+                            <div class="form-check">
+                                <input class="form-check-input envio-opcion" type="radio" value="Envio al Interior" name="envio" data-texto="Envio al Interior" data-costo="0" >
+                                <label class='carrito-total-texto' for="enviointerior">Envio al Interior</label>
+                            </div>
+                            <div>Gratis</div>
+                        </div>
                         <hr>
                       
                         <!-- Mostrar el total -->

@@ -21,7 +21,7 @@
      <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
      <script src="https://www.google.com/recaptcha/enterprise.js?render={{ env('RECAPTCHA_SITE_KEY') }}"></script>
      <link rel="stylesheet" href="{{asset('css/plantilla.css')}}">
-     <link rel="stylesheet" href="{{asset('css/page.css')}}">
+     <link rel="stylesheet" href="{{asset('css/page.css?2')}}">
   {{-- MERCADOPAGO --}}
   <script src="https://sdk.mercadopago.com/js/v2"></script>
 

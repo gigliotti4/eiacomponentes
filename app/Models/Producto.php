@@ -9,21 +9,27 @@ class Producto extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['orden', 'codigo', 'nombre', 'descripcion', 'imagen', 'galeria', 'precio', 'descuento', 'descuento_dos', 'cantidad', 'cantidad_dos', 'categoria_id'];
+    protected $fillable = ['orden', 'codigo', 'nombre', 'descripcion', 'imagen', 'galeria', 'precio', 'descuento', 'descuento_dos', 'cantidad', 'cantidad_dos', 'cantidad_dos', 'presentacion', 'cantidad_minima'];
 
-    protected $casts = [
-        'galeria' => 'array',
-    ];
+    // protected $casts = [
+    //     'galeria' => 'array',
+    // ];
 
-    public function categoria()
+    public function categorias()
     {
-        return $this->belongsTo(Categoria::class);
+        return $this->belongsToMany(Categoria::class, 'categoria_producto');
     }
 
-    public function colores()
-    {
-        return $this->belongsToMany(Color::class, 'color_producto');
-    }
+
+    // public function categoria()
+    // {
+    //     return $this->belongsTo(Categoria::class);
+    // }
+
+    // public function colores()
+    // {
+    //     return $this->belongsToMany(Color::class, 'color_producto');
+    // }
 
     public function relaciones()
 {

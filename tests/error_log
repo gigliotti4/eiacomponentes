@@ -1,0 +1,8 @@
+[28-Sep-2024 17:19:38 America/Santiago] PHP Fatal error:  Uncaught Error: Class "Illuminate\Foundation\Testing\TestCase" not found in /home/d3osolecom/public_html/eiacomponentes/tests/TestCase.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/d3osolecom/public_html/eiacomponentes/tests/TestCase.php on line 7
+[10-Oct-2024 23:53:33 America/Santiago] PHP Fatal error:  Uncaught Error: Class "Illuminate\Foundation\Testing\TestCase" not found in /home/d3osolecom/public_html/eiacomponentes/tests/TestCase.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/d3osolecom/public_html/eiacomponentes/tests/TestCase.php on line 7

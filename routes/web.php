@@ -11,6 +11,7 @@ Route::get('/comprar', [App\Http\Controllers\PageController::class, 'comprar'])-
 Route::get('/categorias', [App\Http\Controllers\PageController::class, 'categorias'])->name('categorias');
 Route::get('/producto/{id}', [App\Http\Controllers\PageController::class, 'producto'])->name('producto');
 Route::get('/productos', [App\Http\Controllers\PageController::class, 'filtroProducto'])->name('filtroproducto');
+Route::get('/buscar-productos', [App\Http\Controllers\PageController::class, 'search'])->name('productos.search');
 Route::get('/presupuesto', [App\Http\Controllers\PageController::class, 'presupuesto'])->name('presupuesto');
 Route::post('/contacto/send', [App\Http\Controllers\PageController::class, 'sendContactoMail'])->name('contacto.send');
 Route::post('/presupuesto/send', [App\Http\Controllers\PageController::class, 'sendPresupuestoMail'])->name('presupuesto.send');

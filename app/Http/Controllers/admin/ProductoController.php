@@ -36,7 +36,8 @@ class ProductoController extends Controller
             'galeria' => 'nullable|array',
             'galeria.*' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg',
             'precio' => 'numeric',
-            'categoria_id' => 'required|exists:categorias,id',
+            'categorias' => 'required|array',
+            'categorias.*' => 'exists:categorias,id',
             'colores' => 'nullable|array',
             'colores.*' => 'exists:colors,id',
         ]);
@@ -64,21 +65,24 @@ class ProductoController extends Controller
 
         $producto = Producto::create($data);
 
-        if ($request->has('colores')) {
-            $producto->colores()->sync($request->colores);
-        }
+        // Asignar categorías al producto
+        $producto->categorias()->sync($request->categorias);
 
-            // Buscar productos relacionados dentro de la misma categoría
-            $relacionados = Producto::where('categoria_id', $producto->categoria_id)
-            ->where('id', '!=', $producto->id)
-            ->inRandomOrder()
-            ->limit(4) // Limita a 3 productos relacionados
-            ->get();
+        // if ($request->has('colores')) {
+        //     $producto->colores()->sync($request->colores);
+        // }
 
-        // Asigna productos relacionados
-        foreach ($relacionados as $relacionado) {
-        $producto->relaciones()->attach($relacionado->id);
-        }
+        //     // Buscar productos relacionados dentro de la misma categoría
+        //     $relacionados = Producto::where('categoria_id', $producto->categoria_id)
+        //     ->where('id', '!=', $producto->id)
+        //     ->inRandomOrder()
+        //     ->limit(4) // Limita a 3 productos relacionados
+        //     ->get();
+
+        // // Asigna productos relacionados
+        // foreach ($relacionados as $relacionado) {
+        // $producto->relaciones()->attach($relacionado->id);
+        // }
 
 
         return redirect()->route('admin.productos.index')->with('success', 'Producto creado exitosamente.');
@@ -104,7 +108,8 @@ class ProductoController extends Controller
             'galeria' => 'nullable|array',
             'galeria.*' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg',
             'precio' => 'required|numeric',
-            'categoria_id' => 'required|exists:categorias,id',
+            'categorias' => 'required|array',
+            'categorias.*' => 'exists:categorias,id',
             'colores' => 'nullable|array',
             'colores.*' => 'exists:colors,id',
         ]);
@@ -132,21 +137,24 @@ class ProductoController extends Controller
 
         $producto->update($data);
 
-        if ($request->has('colores')) {
-            $producto->colores()->sync($request->colores);
-        } else {
-            $producto->colores()->detach();
-        }
+         // Asignar categorías al producto
+    $producto->categorias()->sync($request->categorias);
 
-           // Obtener 3 productos aleatorios de la misma categoría, excluyendo el producto actual
-            $relacionados = Producto::where('categoria_id', $producto->categoria_id)
-            ->where('id', '!=', $producto->id)
-            ->inRandomOrder()
-            ->limit(4)
-            ->pluck('id')->toArray();
+        // if ($request->has('colores')) {
+        //     $producto->colores()->sync($request->colores);
+        // } else {
+        //     $producto->colores()->detach();
+        // }
 
-        // Sincronizar los productos relacionados
-        $producto->relaciones()->sync($relacionados);
+        //    // Obtener 3 productos aleatorios de la misma categoría, excluyendo el producto actual
+        //     $relacionados = Producto::where('categoria_id', $producto->categoria_id)
+        //     ->where('id', '!=', $producto->id)
+        //     ->inRandomOrder()
+        //     ->limit(4)
+        //     ->pluck('id')->toArray();
+
+        // // Sincronizar los productos relacionados
+        // $producto->relaciones()->sync($relacionados);
 
         return redirect()->route('admin.productos.index')->with('success', 'Producto "' . $producto->nombre . '" actualizado exitosamente.');
     }

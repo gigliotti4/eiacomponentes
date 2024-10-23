@@ -518,24 +518,7 @@ public function processCheckout2(Request $request)
 
  
 
-    public function update(Request $request)
-        {
-            try {
-                $rowId = $request->input('rowId');
-                $quantity = $request->input('qty');
-
-                Cart::update($rowId, $quantity);
-
-                return response()->json([
-                    'subtotal' => Cart::get($rowId)->subtotal,
-                    'cartSubtotal' => Cart::subtotal(),
-                    'cartTotal' => Cart::total(),
-                ]);
-            } catch (Exception $e) {
-                Log::error('Error updating cart: ' . $e->getMessage());
-                return response()->json(['error' => 'Hubo un error al actualizar el carrito.'], 500);
-            }
-        }
+  
 
 
 
@@ -587,36 +570,74 @@ public function processCheckout2(Request $request)
     }
 
 
-    // CartController.php
     public function addcomerciante(Request $request)
     {
         try {
-            // Add the product to the cart
+            // Validación de entrada
+            $request->validate([
+                'producto_id' => 'required|exists:productos,id',
+                'nombre' => 'required|string',
+                'cantidad' => 'required|integer|min:1',
+                'precio' => 'required|numeric|min:0',
+                'color' => 'nullable|string',
+                'imagen' => 'required|string',
+                'presentacion' => 'required|integer|min:1',
+                'cantidad_minima' => 'required|integer|min:1',
+            ]);
+    
+            // Agregar el producto al carrito
             Cart::add($request->producto_id, $request->nombre, $request->cantidad, $request->precio, [
                 'imagen' => $request->imagen,
                 'categoria' => $request->categoria,
                 'codigo' => $request->codigo,
                 'colores' => [
                     'color_seleccionado' => $request->color
-                ]
+                ],
+                'presentacion' => $request->presentacion, // Guardar la presentación
+                'cantidad_minima' => $request->cantidad_minima // Guardar la cantidad mínima
             ])->associate(Producto::class);
-            // Get the updated cart count
+    
+            // Obtener el número total de productos en el carrito
             $cartCount = Cart::content()->count();
-
-            // Return a successful JSON response with the cart count
+    
+            // Retornar respuesta JSON
             return response()->json([
                 'success' => 'Producto agregado al carrito.',
                 'cartCount' => $cartCount,
             ]);
         } catch (ValidationException $e) {
-            // Handle validation exceptions
+            // Manejar errores de validación
             return response()->json(['errors' => $e->errors()], 422);
         } catch (Exception $e) {
-            // Log any other exceptions and return an error response
+            // Manejar cualquier otro error
             Log::error('Error adding product to cart: ' . $e->getMessage());
             return response()->json(['error' => 'Hubo un error al agregar el producto al carrito.'], 500);
         }
     }
+
+    public function update(Request $request)
+    {
+        $cartItem = Cart::get($request->rowId);
+    
+        // Validar que la cantidad no sea menor a la cantidad mínima
+        if ($request->qty < $cartItem->options->cantidad_minima) {
+            return response()->json(['error' => 'La cantidad no puede ser menor a la cantidad mínima permitida.'], 422);
+        }
+    
+        // Validar que la cantidad sea un múltiplo de la presentación
+        if ($request->qty % $cartItem->options->presentacion !== 0) {
+            return response()->json(['error' => 'La cantidad debe ser un múltiplo de la presentación del producto.'], 422);
+        }
+    
+        // Actualizar la cantidad en el carrito
+        Cart::update($request->rowId, $request->qty);
+    
+        // Devolver solo un mensaje de éxito sin los cálculos de subtotales
+        return response()->json([
+            'success' => 'Cantidad actualizada con éxito.',
+        ]);
+    }
+    
     public function sendcomerciante(Request $request)
     { 
         

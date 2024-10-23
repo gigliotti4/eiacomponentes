@@ -21,7 +21,7 @@
         {!!$carritoinfo->desc_minorista!!}
     </div>
 </div>
-        @endif
+@endif
 
 <div class="container my-5">
     <div class="row">
@@ -39,9 +39,8 @@
                             <th scope="col">Nombre</th>
                             <th scope="col">Colores</th>
                             <th scope="col">Cantidad</th>
-                            <th scope="col">Un. x caja</th>
-                            {{-- <th scope="col">Precio Un.
-                                sin descuento</th> --}}
+                            <th scope="col">Presentacion</th>
+                         <th scope="col">Cantidad Minima</th> 
                             <th scope="col">Accion</th>
 
                         </tr>
@@ -60,21 +59,25 @@
                                     @endforeach
                                 </select></td>
                                 <td>
-                                    <div class="wrapper d-flex">
-                                        <button class="plusminus" onclick="handleMinus({{ $producto->id }})">-</button>
-                                        <input type="number" class="form-control text-center border-0 form-control-sm cantidad-input{{$producto->id}}" name="qty" pattern="[0-9]+" title="Ingrese solo números" inputmode="numeric" min="1" value="1" required>
-                                        <button class="plusminus" onclick="handlePlus({{ $producto->id }})">+</button>
+                                    <div class="wrapper ">
+                                        <button class="plusminus" onclick="handleMinus({{ $producto->id }}, {{ $producto->presentacion }})">-</button>
+                                        <input type="number" class="form-control text-center border-0 form-control-sm cantidad-input{{$producto->id}}" name="qty"
+                                               min="{{ $producto->cantidad_minima }}" step="{{ $producto->presentacion }}" value="{{ $producto->cantidad_minima }}" required>
+                                        <button class="plusminus" onclick="handlePlus({{ $producto->id }}, {{ $producto->presentacion }})">+</button>
                                     </div>
                                 </td>
-                                <td>unidad</td>
+                                <td>{{ $producto->presentacion }}</td>
+                                <td>{{ $producto->cantidad_minima }}</td>
                                 {{-- <td>${{ number_format($producto->precio, 2, ',', '.') }}</td> --}}
                                 <td>
                                     <button type="submit" data-id="{{$producto->id}}"
                                         {{-- data-categoria="{{$producto->categoria->nombre}}" --}}
-                                        data-colores="{{ $producto->colores->pluck('color')->implode(', ') }}"
+                                        data-colores="{{ @$producto->colores->pluck('color')->implode(', ') }}"
                                         data-nombre="{{$producto->nombre}}"
                                         data-codigo="{{$producto->codigo}}"
                                         data-precio="{{$producto->precio}}"
+                                        data-presentacion="{{ $producto->presentacion }}"
+                                        data-cantidad-minima="{{ $producto->cantidad_minima }}"
                                         data-imagen="{{ asset(Storage::url($producto->imagen)) }}"
                                         class="add-cart btn btn__white {{ !isset($producto->precio) ? 'disabled' : '' }}" {{ !isset($producto->precio) ? 'disabled' : '' }}>
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
@@ -86,17 +89,9 @@
                         @endforeach
                     </tbody>
                 </table>
-            @endif
-      
-        
+            @endif    
     </div>
 </div>
-
-
-
-
-
-
 
 
 @endsection
@@ -105,21 +100,22 @@
 
 
 <script>
-    function handlePlus(productId) {
-        let input = document.querySelector('.cantidad-input' + productId);
-        let currentValue = parseInt(input.value);
-        if (!isNaN(currentValue)) {
-            input.value = currentValue + 1;
-        }
+function handlePlus(productId, presentacion) {
+    let input = document.querySelector('.cantidad-input' + productId);
+    let currentValue = parseInt(input.value);
+    if (!isNaN(currentValue)) {
+        input.value = currentValue + presentacion; // Sumar en múltiplos de la presentación
     }
+}
 
-    function handleMinus(productId) {
-        let input = document.querySelector('.cantidad-input' + productId);
-        let currentValue = parseInt(input.value);
-        if (!isNaN(currentValue) && currentValue > 1) {
-            input.value = currentValue - 1;
-        }
+function handleMinus(productId, presentacion) {
+    let input = document.querySelector('.cantidad-input' + productId);
+    let currentValue = parseInt(input.value);
+    let cantidadMinima = parseInt(input.getAttribute('min'));
+    if (!isNaN(currentValue) && currentValue > cantidadMinima) {
+        input.value = currentValue - presentacion >= cantidadMinima ? currentValue - presentacion : cantidadMinima;
     }
+}   
 
     $(document).ready(function() {
             // Filtrado de tabla en el lado del cliente
@@ -153,6 +149,10 @@
   let imagen = $(this).data('imagen');
   let qty = $('.cantidad-input' + id).val();
 
+  // Obtener la presentación y cantidad mínima del producto
+  let presentacion = $(this).data('presentacion');
+  let cantidadMinima = $(this).data('cantidad-minima');
+
   // Obtener el color seleccionado
   let selectedColor = $(`select[name=color_${id}]`).val();
 
@@ -173,7 +173,9 @@
       precio: precio,
       imagen: imagen,
       color: selectedColor,
-      cantidad: qty
+      cantidad: qty,
+      presentacion: presentacion, // Enviar la presentación
+      cantidad_minima: cantidadMinima // Enviar la cantidad mínima
     },
     success: function(data) {
       toastr.success('¡Producto añadido con éxito!');
@@ -186,6 +188,7 @@
     }
   });
 });
+
 </script>
 
     

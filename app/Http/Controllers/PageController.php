@@ -67,6 +67,30 @@ class PageController extends Controller
         
         }
     
+     public function search(Request $request)
+    {
+        // Obtenemos el término de búsqueda desde el request
+        $query = $request->input('search');
+          $logo = Logo::first();
+             $redes = Rede::first();
+        $contacto = Contacto::first();  
+        $cartCount = Cart::content()->count();
+        // Si hay un término de búsqueda, realizamos la consulta
+        if ($query) {
+            $productos = Producto::where('codigo', 'LIKE', "%$query%")
+                ->orWhere('descripcion', 'LIKE', "%$query%")
+                ->orWhere('nombre', 'LIKE', "%$query%")
+                ->get();
+        } else {
+            // Si no hay búsqueda, traemos todos los productos
+            $productos = Producto::all();
+        }
+
+        // Retornar los productos a la vista
+        return view('page.resultado', compact('productos', 'logo', 'redes', 'contacto', 'cartCount'));
+    }
+    
+    
     public function categorias(){
         // Obtener los datos de los modelos
         $logo = Logo::first();
@@ -106,44 +130,37 @@ class PageController extends Controller
             }
 
 
-        public function filtroProducto(Request $request)
-        {
-              // Obtener los datos de los modelos
-        $logo = Logo::first();
-        $empresa = Empresa::first();
-        $redes = Rede::first();
-        $contacto = Contacto::first(); // Si sólo hay un contacto, puedes usar first()
-        $cartCount = Cart::content()->count();
-            // Obtiene todas las categorías de la base de datos
-            $categorias = Categoria::all();
-
-            // Obtiene todos los colores de la base de datos
-            $colores = Color::all();
-
-            // Crea una consulta base para el modelo Producto
-            $query = Producto::query();
-
-            // Verifica si el parámetro 'categoria_id' está presente en la solicitud
-            if ($request->filled('categoria_id')) {
-                // Si 'categoria_id' está presente, filtra los productos por esta categoría
-                $query->where('categoria_id', $request->categoria_id);
+            public function filtroProducto(Request $request)
+            {
+                // Obtener los datos de los modelos
+                $logo = Logo::first();
+                $empresa = Empresa::first();
+                $redes = Rede::first();
+                $contacto = Contacto::first();
+                $cartCount = Cart::content()->count();
+            
+                // Obtiene todas las categorías de la base de datos
+                $categorias = Categoria::all();
+            
+                // Crea una consulta base para el modelo Producto
+                $query = Producto::query();
+            
+                // Verifica si el parámetro 'categoria_id' está presente en la solicitud
+                if ($request->filled('categoria_id')) {
+                    // Filtra los productos que pertenecen a la categoría seleccionada
+                    $query->whereHas('categorias', function ($q) use ($request) {
+                        $q->where('categorias.id', $request->categoria_id); // Especificar la tabla 'categorias' para el campo 'id'
+                    });
+                }
+            
+                // Ejecuta la consulta y obtiene todos los productos que cumplen con los filtros aplicados
+                $productos = $query->get();
+            
+                // Devuelve la vista 'page.categorias' con las categorías y productos obtenidos
+                return view('page.categorias', compact('categorias', 'productos', 'redes', 'contacto', 'logo', 'cartCount'));
             }
-
-            // Verifica si el parámetro 'color_id' está presente en la solicitud
-            if ($request->filled('color_id')) {
-                // Si 'color_id' está presente, filtra los productos que tienen el color especificado
-                $query->whereHas('colores', function ($q) use ($request) {
-                    // Añade una condición para que el ID del color coincida con 'color_id'
-                    $q->where('color_id', $request->color_id);
-                });
-            }
-
-            // Ejecuta la consulta y obtiene todos los productos que cumplen con los filtros aplicados
-            $productos = $query->get();
-
-            // Devuelve la vista 'productos.index' con las categorías, colores y productos obtenidos
-            return view('page.categorias', compact('categorias', 'colores', 'productos', 'redes', 'contacto', 'logo', 'cartCount'));
-        }
+            
+            
    
 
     public function contacto(){

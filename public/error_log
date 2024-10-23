@@ -1,0 +1,5 @@
+[17-Sep-2024 12:08:56 America/Santiago] PHP Warning:  require(/home/d3osolecom/public_html/eiacomponentes/public/../vendor/autoload.php): Failed to open stream: No such file or directory in /home/d3osolecom/public_html/eiacomponentes/public/index.php on line 34
+[17-Sep-2024 12:08:56 America/Santiago] PHP Fatal error:  Uncaught Error: Failed opening required '/home/d3osolecom/public_html/eiacomponentes/public/../vendor/autoload.php' (include_path='.:/opt/alt/php82/usr/share/pear:/opt/alt/php82/usr/share/php:/usr/share/pear:/usr/share/php') in /home/d3osolecom/public_html/eiacomponentes/public/index.php:34
+Stack trace:
+#0 {main}
+  thrown in /home/d3osolecom/public_html/eiacomponentes/public/index.php on line 34

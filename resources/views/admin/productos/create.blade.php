@@ -20,11 +20,16 @@
     </div>
     <div class="row">
         <div class="form-group col-md-6">
-            <label for="precio">Precio</label>
-            <input type="text" class="form-control" id="precio" name="precio">
+            <label for="presentacion">Presentacion</label>
+            <input type="text" class="form-control" id="presentacion" name="presentacion">
+        </div>
+          <div class="form-group col-md-6">
+            <label for="cantidad_minima">Cantidad Minima</label>
+            <input type="text" class="form-control" id="cantidad_minima" name="cantidad_minima">
         </div>
        
     </div>
+    <hr>
     <div class="row">
         <div class="form-group col-md-6">
             <label for="cantidad">cantidad</label>
@@ -43,7 +48,14 @@
             <input type="text" class="form-control" id="descuento_dos" name="descuento_dos">
         </div>
     </div>
-
+       <div class="row">
+        <div class="form-group col-md-6">
+            <label for="precio">Precio</label>
+            <input type="text" class="form-control" id="precio" name="precio">
+        </div>
+       
+    </div>
+<hr>
     <div class="row">
         <div class="form-group col-md-12">
             <label for="descripcion">Descripción</label>
@@ -53,22 +65,25 @@
 
     <div class="row">
         <div class="form-group col-md-6 my-4">
-            <label for="categoria_id">Categoría</label>
-            <select class="form-control" id="categoria_id" name="categoria_id">
-                <option value="">Seleccione una categoría</option>
+            <label for="categorias">Categoría</label>
+            <select name="categorias[]" id="categorias" multiple class="form-control">
                 @foreach($categorias as $categoria)
-                    <option value="{{ $categoria->id }}">{{ $categoria->nombre }}</option>
+                    <option value="{{ $categoria->id }}" 
+                        @if(isset($producto) && $producto->categorias->contains($categoria->id)) selected @endif>
+                        {{ $categoria->nombre }}
+                    </option>
                 @endforeach
             </select>
+            
         </div>
-            <div class="form-group col-md-6 my-4">
+            {{-- <div class="form-group col-md-6 my-4">
                 <label for="colores">Colores</label>
                 <select class="form-control" id="colores" name="colores[]" multiple="multiple">
                     @foreach($colores as $color)
                         <option value="{{ $color->id }}">{{ $color->nombre }}</option>
                     @endforeach
                 </select>
-            </div>
+            </div> --}}
        
 
        
@@ -81,12 +96,12 @@
         </div>
     </div>
 
-    <div class="row my-4">
+    {{-- <div class="row my-4">
         <div class="form-group col-md-12">
             <label for="galeria">Galeria Tamaño · 225 x 225</label><br>
             <input type="file" class="form-control-file" id="galeria" name="galeria[]" multiple>
         </div>
-    </div>
+    </div> --}}
 
     <div class="d-flex justify-content-start">
         <button type="submit" class="btn btn-primary">Agregar</button>
@@ -97,10 +112,15 @@
 @push('scripts')
 <script>
     $(document).ready(function() {
-        $('#colores').select2({
-            placeholder: "Seleccione uno o más colores",
-            allowClear: true
-        });
+        // $('#colores').select2({
+        //     placeholder: "Seleccione uno o más colores",
+        //     allowClear: true
+        // });
+
+        $('#categorias').select2({
+        placeholder: "Seleccione uno o más categorias",
+        allowClear: true
+    });
     });
 </script>
 @endpush
